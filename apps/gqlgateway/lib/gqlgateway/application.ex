@@ -1,0 +1,38 @@
+defmodule Gqlgateway.Application do
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
+
+  use Application
+
+  def start(_type, _args) do
+    children = [
+      # Start the Ecto repository
+      Gqlgateway.Repo,
+      # Start the Telemetry supervisor
+      GqlgatewayWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: Gqlgateway.PubSub},
+      # Start the Endpoint (http/https)
+      GqlgatewayWeb.Endpoint,
+
+      # GuardianDB sweeper
+      {Guardian.DB.Token.SweeperServer, []}
+
+      # Start a worker by calling: Gqlgateway.Worker.start_link(arg)
+      # {Gqlgateway.Worker, arg}
+    ]
+
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: Gqlgateway.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  def config_change(changed, _new, removed) do
+    GqlgatewayWeb.Endpoint.config_change(changed, removed)
+    :ok
+  end
+end
