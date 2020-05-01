@@ -57,7 +57,10 @@ defmodule Gqlgateway.MixProject do
       {:guardian, "~> 2.1"},
       {:guardian_db, "~> 2.0"},
       {:comeonin, "~> 5.3"},
-      {:argon2_elixir, "~> 2.3"}
+      {:argon2_elixir, "~> 2.3"},
+
+      # for basic admin authorization
+      {:basic_auth, "~> 2.2.2"}
    ]
   end
 

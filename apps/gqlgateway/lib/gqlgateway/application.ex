@@ -15,12 +15,8 @@ defmodule Gqlgateway.Application do
       {Phoenix.PubSub, name: Gqlgateway.PubSub},
       # Start the Endpoint (http/https)
       GqlgatewayWeb.Endpoint,
-
       # GuardianDB sweeper
       {Guardian.DB.Token.SweeperServer, []}
-
-      # Start a worker by calling: Gqlgateway.Worker.start_link(arg)
-      # {Gqlgateway.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
