@@ -43,6 +43,9 @@ defmodule Gqlgateway.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
+	
+      # silence warn about poison
+      {:poison, "~> 3.1"},
 
       # gql deps
       {:absinthe, "~> 1.4"},

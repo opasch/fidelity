@@ -6,6 +6,7 @@ defmodule Fidelity.Umbrella.MixProject do
       apps_path: "apps",
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
+      elixir: "~> 1.9",
       deps: deps(),
       releases: [
         testing: [
