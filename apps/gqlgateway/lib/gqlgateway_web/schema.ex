@@ -38,7 +38,8 @@ defmodule GqlgatewayWeb.Schema do
     end
 
     field :logout, type: :auth_token_payload do
-
+      middleware Middleware.Authorize
+      
       resolve &Resolver.Accounts.logout/3
       middleware &build_payload/2
     end

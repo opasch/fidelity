@@ -1,8 +1,9 @@
 defmodule GqlgatewayWeb.Resolver.Accounts do
   alias Gqlgateway.Accounts
 
-  def me(_parent, _params, resolution) do
-    {:ok, resolution.context.current_user}
+  def me(_parent, _params, %{context: %{current_user_claims: claims}}) do
+    {:ok, user} = Accounts.Guardian.resource_from_claims(claims)
+    {:ok, user}
   end
 
   def create_customer(_parent, %{params: user}, _resolution) do
@@ -27,9 +28,10 @@ defmodule GqlgatewayWeb.Resolver.Accounts do
     end
   end
 
-  def logout(_parent, _params, %{context: context}) do
-    with {:ok, _} <- Accounts.Guardian.revoke(context.token) do
-      {:ok, context.token}
+  def logout(_parent, _params, %{context: %{current_user_claims: claims}}) do
+    with %{jwt: jwt} <- Guardian.DB.Token.find_by_claims(claims),
+         {:ok, _}    <- Accounts.Guardian.revoke(jwt) do
+      {:ok, %{token: jwt}}
     end
   end
 

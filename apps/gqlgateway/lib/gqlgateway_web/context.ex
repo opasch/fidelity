@@ -17,8 +17,8 @@ defmodule GqlgatewayWeb.Context do
     """
     def build_context(conn) do
       with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
-      {:ok, user} <- authorize(token) do
-        %{current_user: user, token: token}
+      {:ok, claims} <- authorize(token) do
+        %{current_user_claims: claims}
       else
         nil ->
             {:error, "Unauthorized"}
@@ -29,8 +29,8 @@ defmodule GqlgatewayWeb.Context do
   
     defp authorize(token) do
         case Accounts.Guardian.decode_and_verify(token) do
-            {:ok, claims} -> 
-                Accounts.Guardian.resource_from_claims(claims)
+            {:ok, claims} ->
+              {:ok, claims}
             {:error, reason} ->
                 {:error, reason}
             nil ->

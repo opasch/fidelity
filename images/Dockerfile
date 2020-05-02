@@ -38,6 +38,5 @@ ENV MIX_ENV=prod \
 WORKDIR /app
 COPY --from=releaser app/_build/prod/rel/testing .
 
-CMD ["ls -la /app/"]
 CMD ["./bin/testing", "eval", "Gqlgateway.Release.migrate"]
 CMD ["./bin/testing", "start"]

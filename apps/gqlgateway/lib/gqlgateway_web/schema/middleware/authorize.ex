@@ -2,7 +2,7 @@ defmodule GqlgatewayWeb.Schema.Middleware.Authorize do
   @behaviour Absinthe.Middleware
 
   def call(resolution, _config) do
-    with %{current_user: _} <- resolution.context do
+    with %{current_user_claims: _} <- resolution.context do
       resolution
     else
       _ ->
