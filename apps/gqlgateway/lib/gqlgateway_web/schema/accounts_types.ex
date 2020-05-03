@@ -10,11 +10,6 @@ defmodule GqlgatewayWeb.Schema.Types do
         field :username, :string
     end
 
-    enum :user_lookup_type do
-        value :email
-        value :username
-    end
-
     payload_object(:user_payload, :user)
 
     input_object :create_user_params do

@@ -126,4 +126,9 @@ defmodule Gqlgateway.Accounts do
         end
     end
   end
+
+  def is_merchant?(%User{} = user), do: has_role?(user, "merchant")
+  def is_customer?(%User{} = user), do: has_role?(user, "customer")
+
+  defp has_role?(%User{} = user, role), do: Enum.any?(user.roles, &(&1 == role))
 end

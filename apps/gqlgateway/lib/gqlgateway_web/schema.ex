@@ -9,7 +9,6 @@ defmodule GqlgatewayWeb.Schema do
 
   query do
     field :me, type: :user do
-
       middleware Middleware.Authorize
       resolve &Resolver.Accounts.me/3
     end
@@ -30,16 +29,22 @@ defmodule GqlgatewayWeb.Schema do
       middleware &build_payload/2
     end
 
-    field :login, type: :auth_token_payload do
+    field :login_customer, type: :auth_token_payload do
       arg :params, :login_params
 
-      resolve &Resolver.Accounts.login/3
+      resolve &Resolver.Accounts.login_customer/3
+      middleware &build_payload/2
+    end
+
+    field :login_merchant, type: :auth_token_payload do
+      arg :params, :login_params
+
+      resolve &Resolver.Accounts.login_merchant/3
       middleware &build_payload/2
     end
 
     field :logout, type: :auth_token_payload do
       middleware Middleware.Authorize
-      
       resolve &Resolver.Accounts.logout/3
       middleware &build_payload/2
     end

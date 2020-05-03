@@ -7,7 +7,7 @@ defmodule GqlgatewayWeb.Schema.Middleware.Authorize do
     else
       _ ->
         resolution
-        |> Absinthe.Resolution.put_result({:error, "Unauthorized"})
+        |> Absinthe.Resolution.put_result({:error, %{message: "Unauthorized"}})
     end
   end
 end

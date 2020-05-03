@@ -5,7 +5,10 @@ defmodule Gqlgateway.MixProject do
     [
       app: :gqlgateway,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.9",
+      build_path: "../../_build",
+      deps_path: "../../deps",
+      lockfile: "../../mix.lock",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
