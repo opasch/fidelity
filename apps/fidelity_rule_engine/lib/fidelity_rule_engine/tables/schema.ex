@@ -1,4 +1,8 @@
 defmodule FidelityRuleEngine.Tables.Schema do
+  @moduledoc """
+  Agent for Schema table.
+  Later cam migrate to an ecto DB call
+  """
   use GenServer
   # use RulesEngine
   require Logger

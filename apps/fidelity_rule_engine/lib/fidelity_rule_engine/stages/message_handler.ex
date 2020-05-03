@@ -1,7 +1,7 @@
 defmodule FidelityRuleEngine.Stages.MessageHandler do
   use Broadway
   require Logger
-  alias FidelityRuleEngine.{Validator, Serializer, Utils, Config}
+  alias FidelityRuleEngine.{Validator, Serializer, Config}
   alias Broadway.Message
   # alias FidelityRuleEngine.Interface.DbProducer
   # alias FidelityRuleEngine.Process.Normalizor
@@ -35,8 +35,8 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
       ]
       # ],
       # batchers: [
-      #   senml: [stages: 1, batch_size: 1],
-      #   ld: [stages: 1, batch_size: 1]
+      #   blockchain: [stages: 1, batch_size: 1],
+      #   other appS: [stages: 1, batch_size: 1]
       # ]
     )
   end
@@ -49,15 +49,16 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
     |> IO.inspect(label: "Got Message")
 
     try do
-      with {:ok, new_message} <- decode_payload(data, []),
-           {:ok, _} <- Validator.validate(new_message),
-           {:ok, merchant_id} <- Utils.extract_merchant_id(new_message),
-           {:ok, client_address} <- Utils.extract_client_address(new_message)
-            do
-        IO.inspect(new_message)
-        Logger.debug(fn -> "FidelityRuleEngine message: Aligned with Internal Data Broker Schema" end)
+      # with {:ok, new_message} <- decode_payload(data, []),
+      with {:ok, new_message} <- Serializer.Json.decode_message(data),
+           {:ok, _} <- Validator.validate(new_message) do
+        # IO.inspect(new_message)
+        Logger.debug(fn ->
+          "FidelityRuleEngine message: Aligned with Internal Data Broker Schema"
+        end)
 
-        FidelityBusinessRules.RuleEngines.SenmlRulesEngine.main(new_message)
+        # TODO: Case Rule Engine returns empty string return failed message; skip batcher; simply ack
+        FidelityRuleEngine.RuleEngines.Engine.main(new_message)
         |> IO.inspect(label: " Rule Engine Output")
 
         message
@@ -94,35 +95,35 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
   #   IO.inspect messages, label: "Batcher LD"
   # end
 
-  defp decode_payload(message, opts \\ []) do
-    case Jason.decode(message, opts) do
-      {:ok, new_message} ->
-        {:ok, new_message}
+  # defp decode_payload(message, opts \\ []) do
+  #   case Jason.decode(message, opts) do
+  #     {:ok, new_message} ->
+  #       {:ok, new_message}
 
-      {:error, _} ->
-        {:error, "{\"Error\":\"error decoding payload\"}"}
-    end
-  end
+  #     {:error, _} ->
+  #       {:error, "{\"Error\":\"error decoding payload\"}"}
+  #   end
+  # end
 
-  defp encode_payload(message) do
-    case Jason.encode(message) do
-      {:ok, new_message} ->
-        {:ok, new_message}
+  # defp encode_payload(message) do
+  #   case Jason.encode(message) do
+  #     {:ok, new_message} ->
+  #       {:ok, new_message}
 
-      {:error, _} ->
-        {:error, "{\"Error\":\"error encoding payload\"}"}
-    end
-  end
+  #     {:error, _} ->
+  #       {:error, "{\"Error\":\"error encoding payload\"}"}
+  #   end
+  # end
 
-  defp extract_payload(message, param) do
-    case get_in(message, param) do
-      nil ->
-        {:error, "{\"Error\":\"error parsing payload\"}"}
+  # defp extract_payload(message, param) do
+  #   case get_in(message, param) do
+  #     nil ->
+  #       {:error, "{\"Error\":\"error parsing payload\"}"}
 
-      param_value ->
-        {:ok, param_value}
-    end
-  end
+  #     param_value ->
+  #       {:ok, param_value}
+  #   end
+  # end
 
   def make_mapper(key_list) do
     to_new_key = Map.new(key_list)

@@ -1,4 +1,7 @@
 defmodule FidelityRuleEngine.RulesHelper do
+  @moduledoc """
+  Rules Helper Module
+  """
   # defstruct :ruleset, :rulesgroup, :rules 
   use RulesEngine
   require Logger
@@ -116,8 +119,7 @@ defmodule FidelityRuleEngine.RulesHelper do
 
           {:ok, rule_group_map} ->
             # IO.inspect rule_group_map, label: "rule_group_map"
-            {:ok, get_actual_rules_details} =
-              get_actual_rules(merchant_id, rule_group_map.rules)
+            {:ok, get_actual_rules_details} = get_actual_rules(merchant_id, rule_group_map.rules)
 
             # %{rule_group_map | rules: get_actual_rules(merchant_id, rule_group_map.rules)}
             %{rule_group_map | rules: get_actual_rules_details}
@@ -139,50 +141,50 @@ defmodule FidelityRuleEngine.RulesHelper do
     {:error, "Please define a list of rules"}
   end
 
-  def noevent_delete_rules(merchant_id, name) do
-    rule_name = "noevent_rule_" <> name
-    rule_geo_name = "noevent_geo_" <> name
-    rule_group_name = "noevent_group_" <> name
+  # def noevent_delete_rules(merchant_id, name) do
+  #   rule_name = "noevent_rule_" <> name
+  #   rule_geo_name = "noevent_geo_" <> name
+  #   rule_group_name = "noevent_group_" <> name
 
-    _ =
-      Rules.delete(merchant_id <> "_" <> rule_name) 
-      # |> IO.inspect(label: "Delete #{rule_name}")
+  #   _ =
+  #     Rules.delete(merchant_id <> "_" <> rule_name) 
+  #     # |> IO.inspect(label: "Delete #{rule_name}")
 
-    _ =
-      Rules.delete(merchant_id <> "_" <> rule_geo_name)
-      # |> IO.inspect(label: "Delete #{rule_geo_name}")
+  #   _ =
+  #     Rules.delete(merchant_id <> "_" <> rule_geo_name)
+  #     # |> IO.inspect(label: "Delete #{rule_geo_name}")
 
-    _ =
-      RulesGroup.delete(merchant_id <> "_" <> rule_group_name)
-      # |> IO.inspect(label: "Delete #{rule_group_name}")
+  #   _ =
+  #     RulesGroup.delete(merchant_id <> "_" <> rule_group_name)
+  #     # |> IO.inspect(label: "Delete #{rule_group_name}")
 
-    _ =
-      RulesSet.remove(merchant_id, rule_group_name)
-      # |> IO.inspect(label: "Delete #{rule_group_name} from Rule Set")
+  #   _ =
+  #     RulesSet.remove(merchant_id, rule_group_name)
+  #     # |> IO.inspect(label: "Delete #{rule_group_name} from Rule Set")
 
-    FidelityRuleEngine.Tables.TasksRegistry.cancel(merchant_id <> "_" <> rule_name)
-    # |> IO.inspect(label: "Delete #{rule_group_name} : Cancel Task ")
-    Logger.debug(fn -> "{\"Fidelity_Business_Rules\":\"NoEvent_#{name} Deleted\"}" end)
+  #   FidelityRuleEngine.Tables.TasksRegistry.cancel(merchant_id <> "_" <> rule_name)
+  #   # |> IO.inspect(label: "Delete #{rule_group_name} : Cancel Task ")
+  #   Logger.debug(fn -> "{\"Fidelity_Rules_Engine\":\"NoEvent_#{name} Deleted\"}" end)
 
-  end
+  # end
 
-  def noevent_lookup_rules(merchant_id, name) do
-    rule_name = "noevent_rule_" <> name
-    rule_geo_name = "noevent_geo_" <> name
-    rule_group_name = "noevent_group_" <> name
+  # def noevent_lookup_rules(merchant_id, name) do
+  #   rule_name = "noevent_rule_" <> name
+  #   rule_geo_name = "noevent_geo_" <> name
+  #   rule_group_name = "noevent_group_" <> name
 
-    list_rules = [
-      rule_geo_name,
-      rule_name,
-      rule_group_name
-    ]
+  #   list_rules = [
+  #     rule_geo_name,
+  #     rule_name,
+  #     rule_group_name
+  #   ]
 
-    with {:ok, noevent_rules} <-
-           FidelityRuleEngine.RulesHelper.get_actual_rules(merchant_id, list_rules) do
-      noevent_rules
-    else
-      _ ->
-        "Rules not found"
-    end
-  end
+  #   with {:ok, noevent_rules} <-
+  #          FidelityRuleEngine.RulesHelper.get_actual_rules(merchant_id, list_rules) do
+  #     noevent_rules
+  #   else
+  #     _ ->
+  #       "Rules not found"
+  #   end
+  # end
 end

@@ -1,4 +1,8 @@
 defmodule FidelityRuleEngine.Utils do
+  @moduledoc """
+  Utils module.
+  Collection of usefull functions.
+  """
   alias FidelityRuleEngine.Serializer
   require Logger
 
@@ -73,7 +77,6 @@ defmodule FidelityRuleEngine.Utils do
   def extract_items(%{:items => message} = _event) do
     {:ok, message}
   end
-
 
   @doc """
 

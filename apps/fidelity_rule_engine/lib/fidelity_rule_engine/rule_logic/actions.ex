@@ -23,11 +23,11 @@ defmodule FidelityRuleEngine.RuleLogic.Actions do
     fn _facts -> IO.puts("Alarm severity: #{severity}") end
   end
 
-  def check_actions(%{"noevent" => name, "license_plate" => license_plate}) do
-    fn facts ->
-      FidelityRuleEngine.RuleLogic.NoEvent.callback_geo_cancel_rule(facts, license_plate, name)
-    end
-  end
+  # def check_actions(%{"noevent" => name, "merchante_id" => merchante_id}) do
+  #   fn facts ->
+  #     FidelityRuleEngine.RuleLogic.NoEvent.callback_geo_cancel_rule(facts, merchante_id, name)
+  #   end
+  # end
 
   def check_actions(_) do
     :error

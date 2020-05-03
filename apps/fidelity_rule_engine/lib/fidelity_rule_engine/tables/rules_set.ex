@@ -1,4 +1,9 @@
 defmodule FidelityRuleEngine.Tables.RulesSet do
+
+  @moduledoc """
+  Agent for RulesSet table.
+  Later cam migrate to an ecto DB call
+  """
   use GenServer
   require Logger
 

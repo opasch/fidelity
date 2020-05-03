@@ -1,7 +1,14 @@
 defmodule FidelityRuleEngine.Serializer do
-  # TODO: impl JSON
+  @moduledoc """
+  Useful module to serialize payloads.
+  """
   @derive {Jason.Encoder, only: [:name, :priority, :description]}
+
+
   defmodule Json do
+  @moduledoc """
+  Module that calls Jason serializer library 
+  """
     def encode_message(message) do
       Jason.encode(message)
     end
@@ -31,7 +38,12 @@ defmodule FidelityRuleEngine.Serializer do
     end
   end
 
+
+
   defmodule Binary do
+  @moduledoc """
+  Module that serializes to erlang term
+  """  
     def encode_message(message) do
       {:ok, :erlang.term_to_binary(message)}
     end

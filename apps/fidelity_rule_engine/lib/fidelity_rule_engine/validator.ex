@@ -8,9 +8,8 @@ defmodule FidelityRuleEngine.Validator do
   require Logger
 
   def validate(payload) do
-      # IO.inspect payload
+    # IO.inspect payload
     cond do
-      
       ExJsonSchema.Validator.valid?(FidelityRuleEngine.Tables.Schema.lookup!("schema"), payload) ->
         # Logger.debug(fn -> "FidelityRuleEngine message: Aligned with Internal Data Broker Schema" end)
         {:ok, payload}
