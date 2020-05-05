@@ -553,3 +553,178 @@
      Reason:     reached_max_restart_intensity
      Offender:   [{pid,<0.569.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.568.0>,{amqp_params_network,<<"guest">>,<<"Tvvo2DcezHo+NdTUtyFRdmFAipdYBLk/PNx/KNseMPn0X6FalysKDSJiDjJkihtm">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
 
+2020-05-05 22:07:20 =ERROR REPORT====
+** Generic server <0.488.0> terminating 
+** Last message in was socket_closed
+** When Server state == {state,amqp_network_connection,{state,#Port<0.9>,<<"client 192.168.1.96:52287 -> 192.168.1.64:32771">>,10,<0.509.0>,131072,<0.487.0>,undefined,false},<0.506.0>,{amqp_params_network,<<"guest">>,<<"pKnPEuoDauD8iwxVqtZHpdLvFF1VNH+vjHuXPZTlLseplkxOfE/1HZIb8EoObzGJ">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]},0,[{<<"capabilities">>,table,[{<<"publisher_confirms">>,bool,true},{<<"exchange_exchange_bindings">>,bool,true},{<<"basic.nack">>,bool,true},{<<"consumer_cancel_notify">>,bool,true},{<<"connection.blocked">>,bool,true},{<<"consumer_priorities">>,bool,true},{<<"authentication_failure_close">>,bool,true},{<<"per_consumer_qos">>,bool,true},{<<"direct_reply_to">>,bool,true}]},{<<"cluster_name">>,longstr,<<"rabbit@8d0d22fbcb0c">>},{<<"copyright">>,longstr,<<"Copyright (C) 2007-2016 Pivotal Software, Inc.">>},{<<"information">>,longstr,<<"Licensed under the MPL.  See http://www.rabbitmq.com/">>},{<<"platform">>,longstr,<<"Erlang/OTP">>},{<<"product">>,longstr,<<"RabbitMQ">>},{<<"version">>,longstr,<<"3.6.6">>}],none,false}
+** Reason for termination ==
+** socket_closed_unexpectedly
+2020-05-05 22:07:20 =CRASH REPORT====
+  crasher:
+    initial call: amqp_gen_connection:init/1
+    pid: <0.488.0>
+    registered_name: []
+    exception exit: {socket_closed_unexpectedly,[{gen_server,handle_common_reply,8,[{file,"gen_server.erl"},{line,751}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,249}]}]}
+    ancestors: [<0.486.0>,amqp_sup,<0.419.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.486.0>]
+    dictionary: [{gen_server_call_timeout,60000},{process_name,{amqp_gen_connection,<<"client 192.168.1.96:52287 -> 192.168.1.64:32771">>}}]
+    trap_exit: true
+    status: running
+    heap_size: 4185
+    stack_size: 27
+    reductions: 28441
+  neighbours:
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.486.0>,amqp_connection_sup}
+     Context:    child_terminated
+     Reason:     socket_closed_unexpectedly
+     Offender:   [{pid,<0.488.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.487.0>,{amqp_params_network,<<"guest">>,<<"pKnPEuoDauD8iwxVqtZHpdLvFF1VNH+vjHuXPZTlLseplkxOfE/1HZIb8EoObzGJ">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.486.0>,amqp_connection_sup}
+     Context:    shutdown
+     Reason:     reached_max_restart_intensity
+     Offender:   [{pid,<0.488.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.487.0>,{amqp_params_network,<<"guest">>,<<"pKnPEuoDauD8iwxVqtZHpdLvFF1VNH+vjHuXPZTlLseplkxOfE/1HZIb8EoObzGJ">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =ERROR REPORT====
+** Generic server <0.491.0> terminating 
+** Last message in was socket_closed
+** When Server state == {state,amqp_network_connection,{state,#Port<0.7>,<<"client 192.168.1.96:58669 -> 192.168.1.64:32771">>,10,<0.511.0>,131072,<0.490.0>,undefined,false},<0.505.0>,{amqp_params_network,<<"guest">>,<<"8V8Bq9pcsFwECJc70gs32GFDtNMhwBINFZiX/R8I1BsSY+GJuwaQkxp90XGx2BSM">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]},0,[{<<"capabilities">>,table,[{<<"publisher_confirms">>,bool,true},{<<"exchange_exchange_bindings">>,bool,true},{<<"basic.nack">>,bool,true},{<<"consumer_cancel_notify">>,bool,true},{<<"connection.blocked">>,bool,true},{<<"consumer_priorities">>,bool,true},{<<"authentication_failure_close">>,bool,true},{<<"per_consumer_qos">>,bool,true},{<<"direct_reply_to">>,bool,true}]},{<<"cluster_name">>,longstr,<<"rabbit@8d0d22fbcb0c">>},{<<"copyright">>,longstr,<<"Copyright (C) 2007-2016 Pivotal Software, Inc.">>},{<<"information">>,longstr,<<"Licensed under the MPL.  See http://www.rabbitmq.com/">>},{<<"platform">>,longstr,<<"Erlang/OTP">>},{<<"product">>,longstr,<<"RabbitMQ">>},{<<"version">>,longstr,<<"3.6.6">>}],none,false}
+** Reason for termination ==
+** socket_closed_unexpectedly
+2020-05-05 22:07:20 =ERROR REPORT====
+** Generic server <0.494.0> terminating 
+** Last message in was socket_closed
+** When Server state == {state,amqp_network_connection,{state,#Port<0.11>,<<"client 192.168.1.96:37927 -> 192.168.1.64:32771">>,10,<0.508.0>,131072,<0.493.0>,undefined,false},<0.504.0>,{amqp_params_network,<<"guest">>,<<"0p0CKsVml1ZPfGuov9zn5KkEUbHYmuHTsqH+QpniRe51fGI+i/7iPxCpm/Kehoo3">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]},0,[{<<"capabilities">>,table,[{<<"publisher_confirms">>,bool,true},{<<"exchange_exchange_bindings">>,bool,true},{<<"basic.nack">>,bool,true},{<<"consumer_cancel_notify">>,bool,true},{<<"connection.blocked">>,bool,true},{<<"consumer_priorities">>,bool,true},{<<"authentication_failure_close">>,bool,true},{<<"per_consumer_qos">>,bool,true},{<<"direct_reply_to">>,bool,true}]},{<<"cluster_name">>,longstr,<<"rabbit@8d0d22fbcb0c">>},{<<"copyright">>,longstr,<<"Copyright (C) 2007-2016 Pivotal Software, Inc.">>},{<<"information">>,longstr,<<"Licensed under the MPL.  See http://www.rabbitmq.com/">>},{<<"platform">>,longstr,<<"Erlang/OTP">>},{<<"product">>,longstr,<<"RabbitMQ">>},{<<"version">>,longstr,<<"3.6.6">>}],none,false}
+** Reason for termination ==
+** socket_closed_unexpectedly
+2020-05-05 22:07:20 =CRASH REPORT====
+  crasher:
+    initial call: amqp_gen_connection:init/1
+    pid: <0.494.0>
+    registered_name: []
+    exception exit: {socket_closed_unexpectedly,[{gen_server,handle_common_reply,8,[{file,"gen_server.erl"},{line,751}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,249}]}]}
+    ancestors: [<0.492.0>,amqp_sup,<0.419.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.492.0>]
+    dictionary: [{gen_server_call_timeout,60000},{process_name,{amqp_gen_connection,<<"client 192.168.1.96:37927 -> 192.168.1.64:32771">>}}]
+    trap_exit: true
+    status: running
+    heap_size: 4185
+    stack_size: 27
+    reductions: 28597
+  neighbours:
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.492.0>,amqp_connection_sup}
+     Context:    child_terminated
+     Reason:     socket_closed_unexpectedly
+     Offender:   [{pid,<0.494.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.493.0>,{amqp_params_network,<<"guest">>,<<"0p0CKsVml1ZPfGuov9zn5KkEUbHYmuHTsqH+QpniRe51fGI+i/7iPxCpm/Kehoo3">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =ERROR REPORT====
+** Generic server <0.482.0> terminating 
+** Last message in was socket_closed
+** When Server state == {state,amqp_network_connection,{state,#Port<0.10>,<<"client 192.168.1.96:47071 -> 192.168.1.64:32771">>,10,<0.507.0>,131072,<0.480.0>,undefined,false},<0.503.0>,{amqp_params_network,<<"guest">>,<<"kZ3jtHcJjW+S/gJKskCch0o0j//S4Srr5Z/98k2KXppNkrd8GwLjO7mQojHWNEcu">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]},0,[{<<"capabilities">>,table,[{<<"publisher_confirms">>,bool,true},{<<"exchange_exchange_bindings">>,bool,true},{<<"basic.nack">>,bool,true},{<<"consumer_cancel_notify">>,bool,true},{<<"connection.blocked">>,bool,true},{<<"consumer_priorities">>,bool,true},{<<"authentication_failure_close">>,bool,true},{<<"per_consumer_qos">>,bool,true},{<<"direct_reply_to">>,bool,true}]},{<<"cluster_name">>,longstr,<<"rabbit@8d0d22fbcb0c">>},{<<"copyright">>,longstr,<<"Copyright (C) 2007-2016 Pivotal Software, Inc.">>},{<<"information">>,longstr,<<"Licensed under the MPL.  See http://www.rabbitmq.com/">>},{<<"platform">>,longstr,<<"Erlang/OTP">>},{<<"product">>,longstr,<<"RabbitMQ">>},{<<"version">>,longstr,<<"3.6.6">>}],none,false}
+** Reason for termination ==
+** socket_closed_unexpectedly
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.492.0>,amqp_connection_sup}
+     Context:    shutdown
+     Reason:     reached_max_restart_intensity
+     Offender:   [{pid,<0.494.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.493.0>,{amqp_params_network,<<"guest">>,<<"0p0CKsVml1ZPfGuov9zn5KkEUbHYmuHTsqH+QpniRe51fGI+i/7iPxCpm/Kehoo3">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =ERROR REPORT====
+** Generic server <0.485.0> terminating 
+** Last message in was socket_closed
+** When Server state == {state,amqp_network_connection,{state,#Port<0.8>,<<"client 192.168.1.96:43305 -> 192.168.1.64:32771">>,10,<0.510.0>,131072,<0.484.0>,undefined,false},<0.502.0>,{amqp_params_network,<<"guest">>,<<"hsrzaRrgwQpGY7wz78K4XpKktgSAodLHl8hN/2il2jxd/p6pMP1HlY06Wlz7BJ4h">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]},0,[{<<"capabilities">>,table,[{<<"publisher_confirms">>,bool,true},{<<"exchange_exchange_bindings">>,bool,true},{<<"basic.nack">>,bool,true},{<<"consumer_cancel_notify">>,bool,true},{<<"connection.blocked">>,bool,true},{<<"consumer_priorities">>,bool,true},{<<"authentication_failure_close">>,bool,true},{<<"per_consumer_qos">>,bool,true},{<<"direct_reply_to">>,bool,true}]},{<<"cluster_name">>,longstr,<<"rabbit@8d0d22fbcb0c">>},{<<"copyright">>,longstr,<<"Copyright (C) 2007-2016 Pivotal Software, Inc.">>},{<<"information">>,longstr,<<"Licensed under the MPL.  See http://www.rabbitmq.com/">>},{<<"platform">>,longstr,<<"Erlang/OTP">>},{<<"product">>,longstr,<<"RabbitMQ">>},{<<"version">>,longstr,<<"3.6.6">>}],none,false}
+** Reason for termination ==
+** socket_closed_unexpectedly
+2020-05-05 22:07:20 =CRASH REPORT====
+  crasher:
+    initial call: amqp_gen_connection:init/1
+    pid: <0.491.0>
+    registered_name: []
+    exception exit: {socket_closed_unexpectedly,[{gen_server,handle_common_reply,8,[{file,"gen_server.erl"},{line,751}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,249}]}]}
+    ancestors: [<0.489.0>,amqp_sup,<0.419.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.489.0>]
+    dictionary: [{gen_server_call_timeout,60000},{process_name,{amqp_gen_connection,<<"client 192.168.1.96:58669 -> 192.168.1.64:32771">>}}]
+    trap_exit: true
+    status: running
+    heap_size: 4185
+    stack_size: 27
+    reductions: 28597
+  neighbours:
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.489.0>,amqp_connection_sup}
+     Context:    child_terminated
+     Reason:     socket_closed_unexpectedly
+     Offender:   [{pid,<0.491.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.490.0>,{amqp_params_network,<<"guest">>,<<"8V8Bq9pcsFwECJc70gs32GFDtNMhwBINFZiX/R8I1BsSY+GJuwaQkxp90XGx2BSM">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.489.0>,amqp_connection_sup}
+     Context:    shutdown
+     Reason:     reached_max_restart_intensity
+     Offender:   [{pid,<0.491.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.490.0>,{amqp_params_network,<<"guest">>,<<"8V8Bq9pcsFwECJc70gs32GFDtNMhwBINFZiX/R8I1BsSY+GJuwaQkxp90XGx2BSM">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =CRASH REPORT====
+  crasher:
+    initial call: amqp_gen_connection:init/1
+    pid: <0.482.0>
+    registered_name: []
+    exception exit: {socket_closed_unexpectedly,[{gen_server,handle_common_reply,8,[{file,"gen_server.erl"},{line,751}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,249}]}]}
+    ancestors: [<0.477.0>,amqp_sup,<0.419.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.477.0>]
+    dictionary: [{gen_server_call_timeout,60000},{process_name,{amqp_gen_connection,<<"client 192.168.1.96:47071 -> 192.168.1.64:32771">>}}]
+    trap_exit: true
+    status: running
+    heap_size: 4185
+    stack_size: 27
+    reductions: 28597
+  neighbours:
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.477.0>,amqp_connection_sup}
+     Context:    child_terminated
+     Reason:     socket_closed_unexpectedly
+     Offender:   [{pid,<0.482.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.480.0>,{amqp_params_network,<<"guest">>,<<"kZ3jtHcJjW+S/gJKskCch0o0j//S4Srr5Z/98k2KXppNkrd8GwLjO7mQojHWNEcu">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.477.0>,amqp_connection_sup}
+     Context:    shutdown
+     Reason:     reached_max_restart_intensity
+     Offender:   [{pid,<0.482.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.480.0>,{amqp_params_network,<<"guest">>,<<"kZ3jtHcJjW+S/gJKskCch0o0j//S4Srr5Z/98k2KXppNkrd8GwLjO7mQojHWNEcu">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =CRASH REPORT====
+  crasher:
+    initial call: amqp_gen_connection:init/1
+    pid: <0.485.0>
+    registered_name: []
+    exception exit: {socket_closed_unexpectedly,[{gen_server,handle_common_reply,8,[{file,"gen_server.erl"},{line,751}]},{proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,249}]}]}
+    ancestors: [<0.483.0>,amqp_sup,<0.419.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.483.0>]
+    dictionary: [{gen_server_call_timeout,60000},{process_name,{amqp_gen_connection,<<"client 192.168.1.96:43305 -> 192.168.1.64:32771">>}}]
+    trap_exit: true
+    status: running
+    heap_size: 4185
+    stack_size: 27
+    reductions: 28597
+  neighbours:
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.483.0>,amqp_connection_sup}
+     Context:    child_terminated
+     Reason:     socket_closed_unexpectedly
+     Offender:   [{pid,<0.485.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.484.0>,{amqp_params_network,<<"guest">>,<<"hsrzaRrgwQpGY7wz78K4XpKktgSAodLHl8hN/2il2jxd/p6pMP1HlY06Wlz7BJ4h">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+
+2020-05-05 22:07:20 =SUPERVISOR REPORT====
+     Supervisor: {<0.483.0>,amqp_connection_sup}
+     Context:    shutdown
+     Reason:     reached_max_restart_intensity
+     Offender:   [{pid,<0.485.0>},{name,connection},{mfargs,{amqp_gen_connection,start_link,[<0.484.0>,{amqp_params_network,<<"guest">>,<<"hsrzaRrgwQpGY7wz78K4XpKktgSAodLHl8hN/2il2jxd/p6pMP1HlY06Wlz7BJ4h">>,<<"/">>,"192.168.1.64",32771,0,0,10,50000,none,[fun amqp_auth_mechanisms:plain/3,fun amqp_auth_mechanisms:amqplain/3],[],[]}]}},{restart_type,intrinsic},{shutdown,brutal_kill},{child_type,worker}]
+

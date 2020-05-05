@@ -6,6 +6,14 @@ defmodule FidelityRuleEngine.Utils do
   alias FidelityRuleEngine.Serializer
   require Logger
 
+  def render(response) do
+    %{
+      response: response
+      # response: Enum.map(templates, &Map.take(&1, [:id, :name, :template]))
+    }
+    # |> Serializer.Json.encode_message!(pretty: true)
+  end
+
   def extract_endpoint!(n_value) do
     result =
       n_value
