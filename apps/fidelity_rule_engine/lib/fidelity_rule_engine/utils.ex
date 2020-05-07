@@ -11,6 +11,7 @@ defmodule FidelityRuleEngine.Utils do
       response: response
       # response: Enum.map(templates, &Map.take(&1, [:id, :name, :template]))
     }
+
     # |> Serializer.Json.encode_message!(pretty: true)
   end
 

@@ -21,7 +21,6 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
 
   @spec rule_lookup(String.t(), String.t()) :: map()
   def rule_lookup(merchant_id, id) do
-
     case Rules.lookup(merchant_id <> "_" <> id) do
       # [{^name, msg}] -> msg 
       {:ok, msg} ->
@@ -39,22 +38,17 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
 
   """
 
-  def add_rule(
-        merchant_id,
-        %{
-            "name" => name,
-            "priority" => priority,
-            "description" => description,
-            "actions" => actions,
-            "condition" => condition
-          } = body_params
-      ) do
-
-
+  def add_rule(%{
+        "merchant_id" => merchant_id,
+        "name" => name,
+        "priority" => priority,
+        "description" => description,
+        "actions" => actions,
+        "condition" => condition
+      }) do
     with {:ok, _condition_checked} <-
            FidelityRuleEngine.RuleLogic.Conditions.check_conditions(condition),
          {:ok, _actions_checked} <- FidelityRuleEngine.RuleLogic.Actions.check_actions(actions) do
-
       rule = %{
         name: name,
         priority: priority,
@@ -67,29 +61,19 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
       }
 
       Utils.render(Rules.add(merchant_id <> "_" <> name, rule))
-
     else
       {:error, reason} ->
         Utils.render(reason)
     end
   end
 
-
-  def add_rule(_,_) do
-    Logger.info("#{@module}: Wrong Payload format received")
-
-    Utils.render("Oops, Wrong payload Format, It should be {\"name\" => name,\"priority\" => priority,\"description\" => description,\"actions\" => actions,\"condition\" => condition}")
-
-  end
-
   def add_rule(_) do
     Logger.info("#{@module}: Wrong Payload format received")
 
-    Utils.render("Oops, Wrong payload Format, It should be {\"name\" => name,\"priority\" => priority,\"description\" => description,\"actions\" => actions,\"condition\" => condition}")
-
+    Utils.render(
+      "Oops, Wrong payload Format, It should be {\"name\" => name,\"priority\" => priority,\"description\" => description,\"actions\" => actions,\"condition\" => condition}"
+    )
   end
-
-
 
   @spec delete_rule(String.t(), String.t()) :: map()
   def delete_rule(merchant_id, name) do
@@ -99,6 +83,7 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
       # [{^name, msg}] -> msg 
       :ok ->
         Utils.render("Deleted")
+
       :error ->
         Utils.render("Rule not found")
     end
