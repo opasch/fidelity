@@ -6,7 +6,16 @@ defmodule Fidelity.Umbrella.MixProject do
       apps_path: "apps",
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      elixir: "~> 1.9",
+      deps: deps(),
+      releases: [
+        testing: [
+	  include_executables_for: [:unix],
+          applications: [
+	    gqlgateway: :permanent
+          ]
+        ]
+      ]
     ]
   end
 
@@ -16,6 +25,6 @@ defmodule Fidelity.Umbrella.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    []
+  []
   end
 end
