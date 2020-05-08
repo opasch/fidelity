@@ -6,3 +6,4 @@ Blockchain based fidelity program
 Umbrella app including:
 
 - Rule Engine
+- GQLGateway
