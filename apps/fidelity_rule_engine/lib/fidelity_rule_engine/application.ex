@@ -12,11 +12,12 @@ defmodule FidelityRuleEngine.Application do
     children = [
       # Starts a worker by calling: FidelityRuleEngine.Worker.start_link(arg)
       # {FidelityRuleEngine.Worker, arg}
-      {FidelityRuleEngine.Tables.Rules, []},
+      # {FidelityRuleEngine.Tables.Rules, []},
       {FidelityRuleEngine.Tables.RulesGroup, []},
       {FidelityRuleEngine.Tables.RulesSet, []},
       {FidelityRuleEngine.Tables.Schema, []},
-      {FidelityRuleEngine.Stages.MessageHandler, []}
+      {FidelityRuleEngine.Stages.MessageHandler, []},
+      {FidelityRuleEngine.Repo, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
