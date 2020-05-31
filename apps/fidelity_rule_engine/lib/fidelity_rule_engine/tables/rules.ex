@@ -6,12 +6,16 @@ defmodule FidelityRuleEngine.Tables.Rules do
   alias FidelityRuleEngine.Repo
   alias FidelityRuleEngine.Schemas.RulesTables
   require Logger
+  import Ecto.Changeset
 
-  ## Client
+  # @required_fields ~w(name actions priority merchant_id condition)
+  # @optional_fields ~w(description)
 
   def check_rules(list_rules) when is_list(list_rules) do
-    rules_list_checked = Enum.map(list_rules, &FidelityRuleEngine.Tables.Rules.lookup(&1))
-    |> IO.inspect
+    rules_list_checked =
+      Enum.map(list_rules, &FidelityRuleEngine.Tables.Rules.lookup(&1))
+      |> IO.inspect()
+
     case Enum.member?(rules_list_checked, :notfound) do
       true -> {:error, "One of the rule does not exist"}
       false -> {:ok, rules_list_checked}
@@ -28,7 +32,7 @@ defmodule FidelityRuleEngine.Tables.Rules do
   Returns `{:ok, "value"}` if the rule exists, `:error` otherwise.
   """
   def lookup(name) do
-    case Repo.get_by(RulesTables, merchant_id: name) do
+    case Repo.get_by(RulesTables, name: name) do
       nil ->
         :notfound
 
@@ -47,18 +51,44 @@ defmodule FidelityRuleEngine.Tables.Rules do
     end
   end
 
-  def add(name, value) do
+  def add(rule) do
     # TODO: pass the merchant_id within the map to avoid the merge
-    struct(RulesTables, Map.merge(value, %{merchant_id: name}))
-    |> Repo.insert!()
+    struct(RulesTables, rule)
+    |> changeset(%{})
   end
 
-  # def delete(name) do
-  #   # 4. Delete from bucket `name`, cast (async) the server `:add`
-  #   GenServer.cast(__MODULE__, {:delete, name})
-  # end
+  def changeset(struc, attrs \\ %{}) do
+    struc
+    |> cast(%{}, [:actions, :condition, :name, :merchant_id, :priority])
+    # |> change(name: :merchant_id)
+    |> unique_constraint(:merchant_id)
+    |> Repo.insert()
+    |> case do
+          {:ok, rule} -> 
+            Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)
+      {:error, _} -> "Error Rule already exists"
+    end
+  end
+
+  def delete(name) do
+    case Repo.get_by(RulesTables, name: name) do
+      nil ->
+        :error
+
+      rule ->
+        Repo.delete(rule) 
+        |> case do
+          {:ok, rule} -> 
+            :ok
+            # Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)
+          {:error, _} -> 
+            :error
+        end
+        
+    end    
+  end
 
   def list do
-    RulesTables|> Repo.all
+    RulesTables |> Repo.all()
   end
 end

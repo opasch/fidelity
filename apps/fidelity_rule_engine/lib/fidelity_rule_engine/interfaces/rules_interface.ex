@@ -50,7 +50,8 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
            FidelityRuleEngine.RuleLogic.Conditions.check_conditions(condition),
          {:ok, _actions_checked} <- FidelityRuleEngine.RuleLogic.Actions.check_actions(actions) do
       rule = %{
-        name: name,
+        merchant_id: merchant_id,
+        name: merchant_id <> "_" <> name,
         priority: priority,
         # description: description_text <> description,
         description: description,
@@ -60,7 +61,8 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
         actions: actions
       }
 
-      Utils.render(Rules.add(merchant_id <> "_" <> name, rule))
+      # Utils.render(Rules.add(merchant_id <> "_" <> name, rule))
+      Utils.render(Rules.add(rule))
     else
       {:error, reason} ->
         Utils.render(reason)

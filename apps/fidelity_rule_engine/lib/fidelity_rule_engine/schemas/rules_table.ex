@@ -11,12 +11,18 @@ defmodule FidelityRuleEngine.Schemas.RulesTables do
     field(:condition, :map)
   end
 
-  @required_fields ~w(name actions priority merchant_id condition)
-  @optional_fields ~w(description)
-  @doc false
-  def changeset(rule, attrs \\ %{}) do
-    rule
-    |> cast(attrs, @required_fields, @optional_fields)
-    |> unique_constraint(:merchant_id, name: :merchant_id_index)
-  end
+  # @required_fields ~w(name actions priority merchant_id condition)
+  # @optional_fields ~w(description)
+  # @doc false
+  # def changeset(rule, attrs \\ %{}) do
+  #   IO.inspect rule
+  #   rule
+  #   |> cast(attrs, @required_fields, @optional_fields)
+  #   |> unique_constraint(name: :merchant_id)
+  #   |> Repo.insert()
+  #   |> case do
+  #     {:ok, merchant_id} -> merchant_id
+  #     {:error, _} -> "Error Rule already exists"
+  #   end
+  # end
 end
