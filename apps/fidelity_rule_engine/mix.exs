@@ -10,7 +10,9 @@ defmodule FidelityRuleEngine.MixProject do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.9",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -44,4 +46,15 @@ defmodule FidelityRuleEngine.MixProject do
       # {:telemetry, "~> 0.4.1"},
     ]
   end
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/rabbitmq"]
+  defp elixirc_paths(_), do: ["lib"]
+
+  defp aliases do
+    [ 
+     "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+    ]
+  end
+
 end

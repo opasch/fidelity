@@ -11,6 +11,6 @@ defmodule FidelityRuleEngine.Repo.Migrations.RulesTable do
       add :condition, :map
     end
 
-    create unique_index(:rules_table, [:merchant_id])
+    create unique_index(:rules_table, [:name])
   end
 end

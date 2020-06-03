@@ -12,13 +12,7 @@ import Config
 config :fidelity_rule_engine,
   ecto_repos: [FidelityRuleEngine.Repo]
 
-config :fidelity_rule_engine, FidelityRuleEngine.Repo,
-  database: "fidelity_rule_engine_repo",
-  username: "postgres",
-  password: "postgres",
-  hostname: "192.168.1.91",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+
 
 # Sample configuration:
 #

@@ -37,7 +37,7 @@ defmodule FidelityRuleEngine.Tables.Rules do
         :notfound
 
       rule ->
-        {:ok, Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)}
+        {:ok, Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) |> Map.delete(:id)}
     end
   end
 
@@ -47,7 +47,7 @@ defmodule FidelityRuleEngine.Tables.Rules do
         nil
 
       rule ->
-        Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)
+        Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) |> Map.delete(:id)
     end
   end
 
@@ -61,11 +61,11 @@ defmodule FidelityRuleEngine.Tables.Rules do
     struc
     |> cast(%{}, [:actions, :condition, :name, :merchant_id, :priority])
     # |> change(name: :merchant_id)
-    |> unique_constraint(:merchant_id)
+    |> unique_constraint(:name)
     |> Repo.insert()
     |> case do
           {:ok, rule} -> 
-            Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)
+            Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) |> Map.delete(:id)
       {:error, _} -> "Error Rule already exists"
     end
   end
@@ -89,6 +89,12 @@ defmodule FidelityRuleEngine.Tables.Rules do
   end
 
   def list do
-    RulesTables |> Repo.all()
+    RulesTables 
+    |> Repo.all()
+    |> case do
+      rule -> 
+            Enum.map(rule, fn x -> Map.delete(x, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) end)
+      [] -> "No Rules defined in DB"
+    end
   end
 end
