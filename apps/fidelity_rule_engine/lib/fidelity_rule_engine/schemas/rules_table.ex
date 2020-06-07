@@ -1,7 +1,7 @@
-defmodule FidelityRuleEngine.Schemas.RulesTables do
+defmodule FidelityRuleEngine.Schemas.RulesTable do
   use Ecto.Schema
-  import Ecto.Changeset
-
+  # import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime, usec: true]
   schema "rules_table" do
     field(:name, :string)
     field(:actions, {:array, :string})
@@ -9,6 +9,8 @@ defmodule FidelityRuleEngine.Schemas.RulesTables do
     field(:priority, :integer)
     field(:merchant_id, :string)
     field(:condition, :map)
+
+    timestamps @timestamps_opts
   end
 
   # @required_fields ~w(name actions priority merchant_id condition)

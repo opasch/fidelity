@@ -10,26 +10,26 @@ defmodule FidelityRuleEngine.Interfaces.RulesSetInterfaces do
   alias FidelityRuleEngine.Tables.RulesSet
   alias FidelityRuleEngine.Utils
 
-  @doc """
-  Get Templates from Mapping
+  # @doc """
+  # Get Templates from Mapping
 
-  Returns : json response
+  # Returns : json response
 
-  """
-  def rules_list() do
-    Utils.render(RulesSet.list())
-  end
+  # """
+  # def rules_list(merchant_id) do
+  #   Utils.render(RulesSet.list(merchant_id))
+  # end
 
-  @spec rule_lookup(String.t()) :: Map.t()
-  def rule_lookup(merchant_id) do
-    case RulesSet.lookup(merchant_id) do
-      {:ok, msg} ->
-        Utils.render(msg)
+  # @spec rule_lookup(String.t()) :: Map.t()
+  # def rule_lookup(merchant_id) do
+  #   case RulesSet.lookup(merchant_id) do
+  #     {:ok, msg} ->
+  #       Utils.render(msg)
 
-      :notfound ->
-        Utils.render("No Rule Set found")
-    end
-  end
+  #     :notfound ->
+  #       Utils.render("No Rule Set found")
+  #   end
+  # end
 
   @doc """
   Get Templates from Mapping
@@ -57,7 +57,12 @@ defmodule FidelityRuleEngine.Interfaces.RulesSetInterfaces do
       }) do
     with {:ok, _rules_checked} <-
            FidelityRuleEngine.RulesHelper.check_rules(merchant_id, rules) do
-      Utils.render(RulesSet.add(merchant_id, rules))
+      rule_set = %{
+        merchant_id: merchant_id,
+        rules: rules
+      }
+
+      Utils.render(RulesSet.add(rule_set))
     else
       {:error, reason} ->
         Utils.render(reason)
@@ -72,30 +77,46 @@ defmodule FidelityRuleEngine.Interfaces.RulesSetInterfaces do
     )
   end
 
-  @spec delete_rule(String.t(), String.t()) :: Map.t()
-  def delete_rule(merchant_id, id) do
-    # TODO: add detailed error message handling later
-    # IO.inspect id 
-    case RulesSet.remove(merchant_id, id) do
-      :ok ->
-        Utils.render("Deleted")
+  @spec delete_rule(Map.t()) :: Map.t()
+  def delete_rule(%{
+        "merchant_id" => merchant_id,
+        "rules" => rules
+      }) do
+    with {:ok, _rules_checked} <-
+           FidelityRuleEngine.RulesHelper.check_rules(merchant_id, rules) do
+      rule_set = %{
+        merchant_id: merchant_id,
+        rules: rules
+      }
 
-      :error ->
-        Utils.render("Rule not found")
+      Utils.render(RulesSet.remove(rule_set))
+    else
+      {:error, reason} ->
+        Utils.render(reason)
     end
   end
 
-  @spec delete_rule(String.t()) :: Map.t()
-  def delete_rule(merchant_id) do
-    # TODO: add detailed error message handling later
-    # IO.inspect id 
-    case RulesSet.delete(merchant_id) do
-      # [{^name, msg}] -> msg 
-      :ok ->
-        Utils.render("Deleted")
+  @spec delete_rule(Map.t()) :: Map.t()
+  def delete_rule(%{
+        "merchant_id" => merchant_id
+      }) do
+    # with {:ok, _rules_checked} <-
+    #        FidelityRuleEngine.RulesHelper.check_rules(merchant_id, rules) do
 
-      :error ->
-        Utils.render("Rule not found")
-    end
+      Utils.render(RulesSet.delete(merchant_id))
+    # else
+    #   {:error, reason} ->
+    #     Utils.render(reason)
+    # end
   end
+
+  def delete_rule(_) do
+    Logger.info("#{@module}: Wrong Payload format received")
+
+    Utils.render(
+      "Oops, Wrong payload Format, It should be {\"merchant_id\" => merchant_id,\"rules\" => rules}"
+    )
+  end
+
+
 end

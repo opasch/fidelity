@@ -15,13 +15,13 @@ defmodule FidelityRuleEngine.RulesHelper do
       list_result ->
         # IO.inspect list_result, label: "list_rules_set"
         list_rules =
-          Enum.map(list_result, &Rules.lookup!(&1))
+          Enum.map(list_result, &Rules.lookup!(merchant_id, &1))
           |> Enum.reject(&is_nil/1)
 
         # |> IO.inspect(label: "list rules")
 
         list_group_rules =
-          Enum.map(list_result, &RulesGroup.lookup!(&1))
+          Enum.map(list_result, &RulesGroup.lookup!(merchant_id, &1))
           |> Enum.reject(&is_nil/1)
 
         # |> Enum.map(&(RuleGroup.create(&1)))    
@@ -43,9 +43,9 @@ defmodule FidelityRuleEngine.RulesHelper do
     rules_list_checked =
       Enum.map(
         list_rules,
-        &case Rules.lookup(merchant_id <> "_" <> &1) do
+        &case Rules.lookup(merchant_id, &1) do
           :notfound ->
-            case RulesGroup.lookup(merchant_id <> "_" <> &1) do
+            case RulesGroup.lookup(merchant_id, &1) do
               :notfound ->
                 "notfound_" <> &1
 
@@ -79,7 +79,7 @@ defmodule FidelityRuleEngine.RulesHelper do
     {:ok,
      Enum.map(
        list_rules,
-       &case Rules.lookup(merchant_id <> "_" <> &1) do
+       &case Rules.lookup(merchant_id, &1) do
          :notfound ->
            nil
 
@@ -113,7 +113,7 @@ defmodule FidelityRuleEngine.RulesHelper do
     actual_list_rules_group =
       Enum.map(
         list_rules_group,
-        &case RulesGroup.lookup(merchant_id <> "_" <> &1) do
+        &case RulesGroup.lookup(merchant_id, &1) do
           :notfound ->
             nil
 

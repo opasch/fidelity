@@ -3,7 +3,7 @@ defmodule FidelityRuleEngine.Application do
   # for more information on OTP Applications
   @moduledoc false
 
-  @module __MODULE__
+  # @module __MODULE__
   require Logger
 
   use Application
@@ -13,8 +13,8 @@ defmodule FidelityRuleEngine.Application do
       # Starts a worker by calling: FidelityRuleEngine.Worker.start_link(arg)
       # {FidelityRuleEngine.Worker, arg}
       # {FidelityRuleEngine.Tables.Rules, []},
-      {FidelityRuleEngine.Tables.RulesGroup, []},
-      {FidelityRuleEngine.Tables.RulesSet, []},
+      # {FidelityRuleEngine.Tables.RulesGroup, []},
+      # {FidelityRuleEngine.Tables.RulesSet, []},
       {FidelityRuleEngine.Tables.Schema, []},
       {FidelityRuleEngine.Stages.MessageHandler, []},
       {FidelityRuleEngine.Repo, []}

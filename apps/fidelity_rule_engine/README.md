@@ -26,7 +26,7 @@ iex(29)>
 
 ```elixir
 
-iex(27)> FidelityRuleEngine.Interfaces.RulesInterface.rules_list                                                                                                                        
+iex(27)> FidelityRuleEngine.Tables.Rules.list("1234")                                                                                                                       
 %{
   response: [
     %{
@@ -64,6 +64,25 @@ iex(33)> FidelityRuleEngine.Interfaces.RulesInterface.add_rule("1234")
 }
 ```
 
+**Lookup Rule**
+
+```elixir
+iex(5)> FidelityRuleEngine.Interfaces.RulesInterface.rule_lookup("1234","test_6")
+[debug] QUERY OK source="rules_table" db=2.6ms queue=4.0ms idle=1308.0ms
+SELECT r0."id", r0."name", r0."actions", r0."description", r0."priority", r0."merchant_id", r0."condition" FROM "rules_table" AS r0 WHERE (r0."name" = $1) ["1234_test_6"]
+%{
+  response: %{
+    actions: ["store"],
+    condition: %{"ti_gt" => 4},
+    description: "",
+    name: "1234_test_6",
+    priority: 1
+  }
+}
+
+```
+
+
 **Delete Rule**
 
 ```elixir
@@ -80,7 +99,7 @@ iex(40)>
 **List Rule Groups**
 
 ```elixir
-iex(21)> FidelityRuleEngine.Interfaces.RulesGroupInterface.rules_list                                                                                                                                                                        
+iex(8)> FidelityRuleEngine.Interfaces.RulesGroupInterface.rules_list("1234")                                                                                                                                                                        
 %{
   response: [
     %{
@@ -133,9 +152,30 @@ iex(25)> FidelityRuleEngine.Interfaces.RulesGroupInterface.delete_rule("1234","t
 **List Rules Set**
 
 ```elixir
-iex(34)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.rules_list                                                           
-%{response: %{"1234" => ["test", "Group_test"]}}
-iex(35)> 
+iex(119)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.rules_set_lookup("1234")
+%{
+  response: %{
+    rules: [
+      %{
+        actions: ["store"],
+        condition: %{"ti_gt" => 4},
+        description: "",
+        name: "test",
+        priority: 1
+      }
+    ],
+    rulesgroup: [
+      %{
+        description: "This is a test rule group",
+        name: "Group_test",
+        priority: 1,
+        rules: ["test", "test_2"],
+        type: :unit_rule_group
+      }
+    ],
+    rulesset: ["test", "Group_test"]
+  }
+}
 
 ```
 
@@ -146,7 +186,17 @@ iex(31)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.add_rule(%{"merchant_i
 %{response: :ok}
 ```
 
+**Delete Rule Set** 
 
+This is also the same as remove the *merchant_id* from the database.
+
+```elixir
+iex(122)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.delete_rule(%{"merchant_id" => "1234"})
+%{response: :ok}
+```
+
+**TODO**
+Clear all the rule tree with the *merchant_id** deletion 
 
 ### Fire Rule Engine 
 
@@ -193,8 +243,8 @@ iex(45)> FidelityRuleEngine.Interfaces.RulesInterface.add_rule(%{"merchant_id" =
 %{response: :ok}
 iex(46)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.add_rule(%{"merchant_id" => "1234","rules" => ["test_3"]})                                                                                        
 %{response: :ok}
-iex(47)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.rules_list 
-%{response: %{"1234" => ["test", "Group_test", "test_3"]}}
+
+
 iex(48)> FidelityRuleEngine.RuleEngines.Engine.main(payload_dec)                                                                                                                                            
 %{
   "cart_id" => "9roj8f70TUEU",

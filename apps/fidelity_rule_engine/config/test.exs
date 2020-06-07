@@ -17,5 +17,4 @@ config :fidelity_rule_engine,
   fidelity_broker_vhost: "",
   fidelity_broker_host_port: "32771"
 
-
-  config :fidelity_rule_engine, :producer_module, {Broadway.DummyProducer, []}
+config :fidelity_rule_engine, :producer_module, {Broadway.DummyProducer, []}

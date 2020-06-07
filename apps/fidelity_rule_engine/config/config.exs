@@ -12,8 +12,6 @@ import Config
 config :fidelity_rule_engine,
   ecto_repos: [FidelityRuleEngine.Repo]
 
-
-
 # Sample configuration:
 #
 #     config :logger, :console,

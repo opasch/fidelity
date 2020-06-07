@@ -16,16 +16,16 @@ defmodule FidelityRuleEngine.Interfaces.RulesGroupInterface do
   Returns : json response
 
   """
-  @spec rules_list() :: Map.t()
-  def rules_list() do
-    Utils.render(RulesGroup.list())
+  @spec rules_list(String.t()) :: Map.t()
+  def rules_list(merchant_id) do
+    Utils.render(RulesGroup.list(merchant_id))
   end
 
   @spec rule_lookup(String.t(), String.t()) :: Map.t()
   def rule_lookup(merchant_id, name) do
     # TODO: add detailed error message handling later
     # IO.inspect id 
-    case RulesGroup.lookup(merchant_id <> "_" <> name) do
+    case RulesGroup.lookup(merchant_id, name) do
       # [{^name, msg}] -> msg 
       {:ok, msg} ->
         Utils.render(msg)
@@ -55,8 +55,9 @@ defmodule FidelityRuleEngine.Interfaces.RulesGroupInterface do
            FidelityRuleEngine.RulesHelper.check_rules(merchant_id, rules) do
       # description_text = "# RuleGroup description\nRules: #{rules}\nUser description:\n"
 
-      value = %{
-        name: name,
+      rule_group = %{
+        merchant_id: merchant_id,
+        name: merchant_id <> "_" <> name,
         priority: priority,
         type: String.to_existing_atom(type),
         # description: description_text <> description,
@@ -64,7 +65,7 @@ defmodule FidelityRuleEngine.Interfaces.RulesGroupInterface do
         rules: rules_checked
       }
 
-      Utils.render(RulesGroup.add(merchant_id <> "_" <> name, value))
+      Utils.render(RulesGroup.add(rule_group))
     else
       {:error, reason} ->
         Utils.render(reason)
@@ -83,7 +84,7 @@ defmodule FidelityRuleEngine.Interfaces.RulesGroupInterface do
   def delete_rule(merchant_id, id) do
     # TODO: add detailed error message handling later
     # IO.inspect id 
-    case RulesGroup.delete(merchant_id <> "_" <> id) do
+    case RulesGroup.delete(merchant_id, id) do
       # [{^name, msg}] -> msg 
       :ok ->
         Utils.render("Deleted")

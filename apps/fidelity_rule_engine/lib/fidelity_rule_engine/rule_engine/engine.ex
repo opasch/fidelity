@@ -9,9 +9,9 @@ defmodule FidelityRuleEngine.RuleEngines.Engine do
     params = RulesEngineParameters.create(%{skip_on_first_applied_rule: false})
     merchant_id = event |> Map.get("merchant_id")
     IO.inspect(event)
-
+    #TODO RuleSet Lookup needs to return a list
     rules_set =
-      with {:ok, list_result} <- FidelityRuleEngine.Tables.RulesSet.lookup(merchant_id),
+      with {:ok, %{rules: list_result}} <- FidelityRuleEngine.Tables.RulesSet.lookup(merchant_id),
            {:ok, list_rules} <-
              FidelityRuleEngine.RulesHelper.get_actual_rules(merchant_id, list_result),
            {:ok, list_group_rules} <-

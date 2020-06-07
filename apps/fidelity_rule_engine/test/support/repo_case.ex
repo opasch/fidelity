@@ -22,8 +22,4 @@ defmodule FidelityRuleEngine.RepoCase do
 
     :ok
   end
-
-
-
-
 end

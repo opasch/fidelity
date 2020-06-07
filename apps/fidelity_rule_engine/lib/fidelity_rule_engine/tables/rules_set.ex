@@ -1,143 +1,189 @@
 defmodule FidelityRuleEngine.Tables.RulesSet do
   @moduledoc """
-  Agent for RulesSet table.
-  Later cam migrate to an ecto DB call
+  Rules Set Table Repo Helper.
+
   """
-  use GenServer
+  alias FidelityRuleEngine.Repo
+  alias FidelityRuleEngine.Schemas.RulesSetTable
   require Logger
-
-  ## Client
-
-  @doc """
-  Starts the registry with the given options.
-
-  `:name` is always required.
-  """
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
-  end
+  import Ecto.Changeset
+  import Ecto.Query
 
   @doc """
-  Looks up the bucket `name` stored in `FidelityRuleEngine.Tables.RulesSet`.
+  Function to lookup for specific rule from Database
 
-  Returns `{:ok, "value"}` if the bucket exists, `:error` otherwise.
+  Returns `{:ok, "value"}` if the rule exists, `:error` otherwise.
   """
-  def lookup(name) do
-    # 2. Lookup is now done directly in ETS, without accessing the server
-    case :ets.lookup(__MODULE__, name) do
-      # [{^name, msg}] -> msg 
-      [{^name, msg}] -> {:ok, msg}
-      [] -> :notfound
+  def lookup(merchant_id) do
+    case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
+      nil ->
+        :notfound
+
+      rule ->
+        # Note the manipulation of the Rule name.
+        {:ok,
+         Map.delete(rule, :__struct__)
+         |> Map.delete(:__meta__)
+         |> Map.delete(:merchant_id)
+         |> Map.delete(:id)
+         |> Map.delete(:inserted_at)
+         |> Map.delete(:updated_at)}
     end
   end
 
-  def lookup!(name) do
-    # 2. Lookup is now done directly in ETS, without accessing the server
-    case :ets.lookup(__MODULE__, name) do
-      # [{^name, msg}] -> msg 
-      [{^name, msg}] -> msg
-      [] -> nil
+  def lookup!(merchant_id) do
+    case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
+      nil ->
+        nil
+
+      rule ->
+        # Note the manipulation of the Rule name.
+        %{rules: found_rules} =
+         Map.delete(rule, :__struct__)
+         |> Map.delete(:__meta__)
+         |> Map.delete(:merchant_id)
+         |> Map.delete(:id)
+         |> Map.delete(:inserted_at)
+         |> Map.delete(:updated_at)
+        
+        found_rules
     end
   end
 
-  def add(name, value) when is_list(value) do
-    # 3. Store to bucket `{name, value}`, call (sync) the server `:add` 
-    GenServer.call(__MODULE__, {:add, {name, value}})
-  end
 
-  def add(_name, _value) do
-    # 3. Store to bucket `{name, value}`, call (sync) the server `:add` 
-    {:error, "Not valid"}
-  end
 
-  def remove(name, value) when is_binary(value) do
-    # 4. Delete from bucket `name`, cast (async) the server `:add`
-    GenServer.call(__MODULE__, {:remove, {name, [value]}})
-  end
+  # def lookup!(merchant_id) do
+  #   query = from(RulesSetTable, where: [merchant_id: ^merchant_id], select: [:rules])
 
-  def remove(_name, _value) do
-    # 4. Delete from bucket `name`, cast (async) the server `:add`
-    {:error, "Not valid"}
-  end
+  #   # RulesTables 
+  #   Repo.all(query)
+  #   |> case do
+  #     [] ->
+  #       "No Rules defined in DB"
 
-  def delete(name) do
-    # 4. Delete from bucket `name`, cast (async) the server `:add`
-    GenServer.call(__MODULE__, {:delete, name})
-  end
+  #     rule ->
+  #       rule
 
-  def list do
-    # 2. tab2list is now done directly in ETS, without accessing the server
-    list_found =
-      :ets.tab2list(__MODULE__)
-      |> Enum.into(%{})
+  #       # Enum.map(rule, fn x -> Map.delete(x, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) |> Map.delete(:id) |> Map.delete(:inserted_at) |> Map.delete(:updated_at) end)
+  #   end
+  # end
 
-    # |> Enum.map( fn {_k, v} ->  v end)
+  def add(%{
+        merchant_id: merchant_id,
+        rules: rules
+      } = rule_set) do
 
-    # |> Jason.encode!()
-
-    list_found
-  end
-
-  ## Server
-  def init(_) do
-    Logger.info("Initializing Rule Set Table")
-
-    table_name =
-      PersistentEts.new(
-        __MODULE__,
-        Application.app_dir(:fidelity_rule_engine, "priv/fidelity_rules_set_table.tab"),
-        [
-          :named_table
-        ]
-      )
-
-    {:ok, table_name}
-  end
-
-  def handle_call({:add, {name, value}}, _from, __MODULE__) do
-    # 5. Read and write to the ETS table
-    # IO.inspect name
-    case lookup(name) do
-      {:ok, existing_list} ->
-        :ets.insert(__MODULE__, {name, existing_list ++ value})
-        {:reply, :ok, __MODULE__}
-
-      :notfound ->
-        :ets.insert(__MODULE__, {name, value})
-        {:reply, :ok, __MODULE__}
-    end
-
-    # :ets.insert(__MODULE__, {name, value})
-    # {:reply, :ok, __MODULE__}
-  end
-
-  # TODO: Finish delete
-  def handle_call({:delete, name}, _from, __MODULE__) do
-    # 6. Read and write to the ETS table
-    # IO.inspect name
-    :ets.delete(__MODULE__, name)
-    {:reply, :ok, __MODULE__}
-  end
-
-  # TODO: Finish delete
-  def handle_call({:remove, {name, value}}, _from, __MODULE__) do
-    # 6. Read and write to the ETS table
-    # IO.inspect name
-    case lookup(name) do
-      {:ok, existing_list} ->
-        :ets.insert(__MODULE__, {name, existing_list -- value})
-        # :ets.delete(__MODULE__, name)
-        {:reply, :ok, __MODULE__}
-
-      :error ->
-        {:reply, :error, __MODULE__}
-
-      :notfound ->
-        {:reply, :notfound, __MODULE__}
+    case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
+      nil -> 
+        struct(RulesSetTable, rule_set)
+        |> IO.inspect(label: "before changeset") 
+        |> changeset(%{})
+        |> Repo.insert()
+        |> case do
+          {:ok, rule} ->
+            Map.delete(rule, :__struct__)
+            |> Map.delete(:__meta__)
+            |> Map.delete(:merchant_id)
+            |> Map.delete(:id)
+            |> Map.delete(:inserted_at)
+            |> Map.delete(:updated_at)
+          {:error, _} ->
+            "Error Rule already exists"
+        end
+      rule_set_list -> 
+        rule_set_list
+        |> changeset(%{rules: rule_set_list.rules ++ rules   |> Enum.uniq})
+        |> Repo.update()
+        |> case do
+          {:ok, rule} ->
+            Map.delete(rule, :__struct__)
+            |> Map.delete(:__meta__)
+            |> Map.delete(:merchant_id)
+            |> Map.delete(:id)
+            |> Map.delete(:inserted_at)
+            |> Map.delete(:updated_at)
+          {:error, _} ->
+            "Error Rule already exists"
+        end
     end
   end
 
-  def handle_info(_msg, state) do
-    {:noreply, state}
+  def remove(%{
+        merchant_id: merchant_id,
+        rules: rules
+      } = rule_set) do
+
+    case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
+      nil -> 
+        :error 
+      rule_set_list -> 
+        rule_set_list
+        |> changeset(%{rules: rule_set_list.rules ++ rules   |> Enum.uniq})
+        |> Repo.update()
+        |> case do
+        {:ok, rule} ->
+          Map.delete(rule, :__struct__)
+          |> Map.delete(:__meta__)
+          |> Map.delete(:merchant_id)
+          |> Map.delete(:id)
+          |> Map.delete(:inserted_at)
+          |> Map.delete(:updated_at)
+        {:error, _} ->
+          "Error Rule already exists"
+      end
+    end
+  end
+
+
+  def changeset(struc, attrs \\ %{}) do
+    struc
+    |> cast(attrs, [:merchant_id, :rules])
+    |> unique_constraint(:merchant_id)
+  end
+
+
+
+  def delete(merchant_id) do
+    case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
+      nil ->
+        :error
+
+      rule ->
+        Repo.delete(rule)
+        |> case do
+          {:ok, _rule} ->
+            :ok
+
+          # Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)
+          {:error, _} ->
+            :error
+        end
+    end
+  end
+
+  def list(merchant_id) do
+    # query = "select * from rules_table where merchant_id=#{merchant_id}"
+    # query = from u in "rules_table",
+    #       where: u.merchant_id == ^merchant_id,
+    #       select: u.*
+
+    query = from(RulesSetTable, where: [merchant_id: ^merchant_id], select: [:rules])
+
+    # RulesTables 
+    Repo.all(query)
+    |> case do
+      [] ->
+        "No Rules defined in DB"
+
+      rule ->
+        Enum.map(rule, fn x ->
+          Map.delete(x, :__struct__)
+          |> Map.delete(:__meta__)
+          |> Map.delete(:merchant_id)
+          |> Map.delete(:id)
+          |> Map.delete(:inserted_at)
+          |> Map.delete(:updated_at)
+        end)
+    end
   end
 end

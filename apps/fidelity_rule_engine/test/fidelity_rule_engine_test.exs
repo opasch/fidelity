@@ -12,5 +12,4 @@ defmodule FidelityRuleEngineTest do
   #   Process.sleep(1000)
   #   IO.inspect(ref, label: "Reference")
   # end
-
 end
