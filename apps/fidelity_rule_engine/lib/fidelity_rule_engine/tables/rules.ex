@@ -126,7 +126,7 @@ defmodule FidelityRuleEngine.Tables.Rules do
 
   def changeset(struc, attrs \\ %{}) do
     struc
-    |> cast(%{}, [:actions, :condition, :name, :merchant_id, :priority])
+    |> cast(attrs, [:actions, :condition, :name, :merchant_id, :priority])
     # |> change(name: :merchant_id)
     |> unique_constraint(:name)
     |> Repo.insert()

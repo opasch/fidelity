@@ -293,6 +293,13 @@ or a combination of any
 
 **Available Conditions**
 
+
+`%{"key" => key, "Operation" => "gt", "value" => value}` - for the received event parameter `key` value is greater than `value`
+
+`%{"key" => key, "Operation" => "lt", "value" => value}` - for the received event parameter `key` value is less than `value` 
+
+`%{"key" => key, "Operation" => "eq", "value" => value}` - for the received event parameter `key` value is equal to `value`
+
 `%{"ti_gt" => value}`- Total number of Items greater than `value`
 
 `%{"ti_lt" => value}`- Total number of Items lower than `value`

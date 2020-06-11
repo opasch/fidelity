@@ -1,15 +1,7 @@
 defmodule FidelityRuleEngine.RuleLogic.Conditions do
-  def check_conditions(%{"key" => key, "Operation" => "gt", "value" => value}) do
-    {:ok, &FidelityRuleEngine.RuleLogic.Conditions.greater_than_rule(&1, key, value)}
-  end
 
-  def check_conditions(%{"key" => key, "Operation" => "lt", "value" => value}) do
-    {:ok, &FidelityRuleEngine.RuleLogic.Conditions.less_than_rule(&1, key, value)}
-  end
 
-  def check_conditions(%{"key" => key, "Operation" => "eq", "value" => value}) do
-    {:ok, &FidelityRuleEngine.RuleLogic.Conditions.equal_than_rule(&1, key, value)}
-  end
+
 
   def check_conditions(%{"ti_gt" => value}) do
     {:ok, &FidelityRuleEngine.RuleLogic.TotalItems.greater_than_rule(&1, value)}
@@ -64,32 +56,6 @@ defmodule FidelityRuleEngine.RuleLogic.Conditions do
     {:error, "no condition defined"}
   end
 
-  def greater_than_rule(facts, key, value) do
-    case Map.get(facts, key) do
-      nil ->
-        false
 
-      x when x >= value ->
-        true
 
-      _ ->
-        false
-    end
-  end
-
-  def less_than_rule(facts, key, value) do
-    case Map.get(facts, key) do
-      nil -> false
-      x when x <= value -> true
-      _ -> false
-    end
-  end
-
-  def equal_than_rule(facts, key, value) do
-    case Map.get(facts, key) do
-      nil -> false
-      x when x == value -> true
-      _ -> false
-    end
-  end
 end
