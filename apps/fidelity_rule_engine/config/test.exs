@@ -9,7 +9,7 @@ config :fidelity_rule_engine, FidelityRuleEngine.Repo,
 
 config :fidelity_rule_engine,
   # serializer: FidelityRuleEngine.Serializer.Json,
-  instance: "http://192.168.1.64/",
+  # instance: "http://192.168.1.64/",
   fidelity_broker_normalized_queue: "fidelity_rule_engine",
   fidelity_broker_username: "guest",
   fidelity_broker_password: "guest",
