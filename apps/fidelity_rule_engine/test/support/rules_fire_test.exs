@@ -67,15 +67,30 @@ defmodule FidelityRuleEngine.RulesFireTest do
         "rules" => ["test_1", "Group_test"]
       })
 
-    assert FidelityRuleEngine.RuleEngines.Engine.main(payload_dec) == [nil,nil]
+    assert FidelityRuleEngine.RuleEngines.Engine.main(payload_dec) == [nil, nil]
 
+    %{response: _} =
+      FidelityRuleEngine.Interfaces.RulesInterface.add_rule(%{
+        "merchant_id" => "1234",
+        "name" => "test_3",
+        "priority" => 1,
+        "description" => "",
+        "actions" => ["store"],
+        "condition" => %{"key" => "total_items", "Operation" => "gt", "value" => 3}
+      })
 
+    %{response: _} =
+      FidelityRuleEngine.Interfaces.RulesSetInterfaces.add_rule(%{
+        "merchant_id" => "1234",
+        "rules" => ["test_3"]
+      })
 
-     %{response: _} = FidelityRuleEngine.Interfaces.RulesInterface.add_rule(%{"merchant_id" => "1234", "name" => "test_3", "priority" => 1, "description" => "", "actions" => ["store"], "condition" => %{"key" => "total_items", "Operation" => "gt", "value" => 3}})
+    IO.inspect(label: "Fire Rule")
 
-     %{response: _} = FidelityRuleEngine.Interfaces.RulesSetInterfaces.add_rule(%{"merchant_id" => "1234","rules" => ["test_3"]})   
-
-     IO.inspect(label: "Fire Rule")
-     assert FidelityRuleEngine.RuleEngines.Engine.main(payload_dec) == [nil, nil, {"test_3", [:ok]}]
+    assert FidelityRuleEngine.RuleEngines.Engine.main(payload_dec) == [
+             nil,
+             nil,
+             {"test_3", [:ok]}
+           ]
   end
 end

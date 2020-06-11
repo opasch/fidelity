@@ -42,17 +42,25 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
     )
   end
 
-  def handle_message(_, %Message{data: data} = message, _) do
+  def handle_message(
+        _,
+        %Message{data: data, metadata: %{headers: [{"merchant_id", :longstr, merchant_id}]}} =
+          message,
+        _
+      ) do
     :ok =
       Logger.debug(fn -> "FidelityRuleEngine: Consumer Original Received Payload: " <> data end)
 
-    message
-    |> IO.inspect(label: "Got Message")
+    # message
+    # |> IO.inspect(label: "Got Message")
+
+    # IO.inspect(merchant_id, label: "Received Merchant_id")
+    # IO.inspect(data, label: "Received date")
 
     try do
       # with {:ok, new_message} <- decode_payload(data, []),
       with {:ok, new_message} <- Serializer.Json.decode_message(data),
-           {:ok, _} <- Validator.validate(new_message) do
+           {:ok, _} <- Validator.validate(new_message, merchant_id) do
         # IO.inspect(new_message)
         Logger.debug(fn ->
           "FidelityRuleEngine message: Aligned with Internal Data Broker Schema"
@@ -60,13 +68,13 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
 
         # TODO: Case Rule Engine returns empty string return failed message; skip batcher; simply ack
         FidelityRuleEngine.RuleEngines.Engine.main(new_message)
-        |> IO.inspect(label: " Rule Engine Output")
+        # |> IO.inspect(label: " Rule Engine Output")
 
         message
       else
         {:error, reason} ->
           # IO.inspect reason
-          Logger.debug(fn -> "FidelityRuleEngine: Error Event #{reason}" end)
+          Logger.debug(fn -> "FidelityRuleEngine: [Error Event] #{reason}" end)
           Message.failed(message, reason)
 
         {:service_unavailable, "Service Unavailable"} ->
@@ -74,8 +82,8 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
           Message.failed(message, "FidelityRuleEngine: Message Broker Service Unavailable")
 
         {:not_acceptable, reason} ->
-          Logger.debug(fn -> "FidelityRuleEngine: Error Event #{reason}" end)
-          Message.failed(message, "FidelityRuleEngine: Error Event #{reason}")
+          Logger.debug(fn -> "FidelityRuleEngine: [Error Event] #{reason}" end)
+          Message.failed(message, "FidelityRuleEngine: [Error Event] #{reason}")
       end
     rescue
       ArgumentError ->
@@ -83,6 +91,11 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
         Message.failed(message, "FidelityRuleEngine: Internal Error Unrecognized Data Format")
         # message
     end
+  end
+
+  def handle_message(_, message, _) do
+    :ok = Logger.debug(fn -> "FidelityRuleEngine: Missing Merchant ID from received Payload" end)
+    Message.failed(message, "FidelityRuleEngine: Missing Merchant ID from received Payload")
   end
 
   # @impl true

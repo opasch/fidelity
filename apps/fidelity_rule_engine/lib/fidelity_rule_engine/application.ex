@@ -15,7 +15,7 @@ defmodule FidelityRuleEngine.Application do
       # {FidelityRuleEngine.Tables.Rules, []},
       # {FidelityRuleEngine.Tables.RulesGroup, []},
       # {FidelityRuleEngine.Tables.RulesSet, []},
-      {FidelityRuleEngine.Tables.Schema, []},
+      # {FidelityRuleEngine.Tables.Schema, []},
       {FidelityRuleEngine.Stages.MessageHandler, []},
       {FidelityRuleEngine.Repo, []}
     ]

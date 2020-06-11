@@ -1,122 +1,146 @@
 defmodule FidelityRuleEngine.Tables.Schema do
   @moduledoc """
-  Agent for Schema table.
-  Later cam migrate to an ecto DB call
+  Rules Set Table Repo Helper.
+
   """
-  use GenServer
-  # use RulesEngine
+  alias FidelityRuleEngine.Repo
+  alias FidelityRuleEngine.Schemas.SchemaTable
   require Logger
-
-  ## Client
-
-  @doc """
-  Starts the schema registry with the given options.
-
-  `:name` is always required.
-  """
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
-  end
-
-  def check_schema(list_schema) when is_list(list_schema) do
-    schema_list_checked = Enum.map(list_schema, &FidelityRuleEngine.Tables.Schema.lookup(&1))
-
-    case Enum.member?(schema_list_checked, :notfound) do
-      true -> {:error, "The Schema does not exist"}
-      false -> {:ok, schema_list_checked}
-    end
-  end
-
-  def check_schema() do
-    {:error, "Please define a schema"}
-  end
+  import Ecto.Changeset
+  import Ecto.Query
 
   @doc """
-  Looks up the bucket `name` stored in `FidelityRuleEngine.Tables.Schema`.
+  Function to lookup for specific rule from Database
 
-  Returns `{:ok, "value"}` if the bucket exists, `:error` otherwise.
+  Returns `{:ok, "value"}` if the rule exists, `:error` otherwise.
   """
-  def lookup(name) do
-    # 2. Lookup is now done directly in ETS, without accessing the server
-    case :ets.lookup(__MODULE__, name) do
-      # [{^name, msg}] -> msg 
-      [{^name, msg}] -> {:ok, msg}
-      [] -> :notfound
+  def lookup(merchant_id) do
+    case Repo.get_by(SchemaTable, merchant_id: merchant_id) do
+      nil ->
+        :notfound
+
+      rule ->
+        # Note the manipulation of the Rule name.
+        {:ok,
+         Map.delete(rule, :__struct__)
+         |> Map.delete(:__meta__)
+         |> Map.delete(:merchant_id)
+         |> Map.delete(:id)
+         |> Map.delete(:inserted_at)
+         |> Map.delete(:updated_at)}
     end
   end
 
-  def lookup!(name) do
-    # 2. Lookup is now done directly in ETS, without accessing the server
-    case :ets.lookup(__MODULE__, name) do
-      # [{^name, msg}] -> msg 
-      [{^name, msg}] -> msg
-      [] -> nil
+  def lookup!(merchant_id) do
+    case Repo.get_by(SchemaTable, merchant_id: merchant_id) do
+      nil ->
+        nil
+
+      found_schema ->
+        # Note the manipulation of the Rule name.
+        %{schema: found_schema} =
+          Map.delete(found_schema, :__struct__)
+          |> Map.delete(:__meta__)
+          |> Map.delete(:merchant_id)
+          |> Map.delete(:id)
+          |> Map.delete(:inserted_at)
+          |> Map.delete(:updated_at)
+
+        found_schema
     end
   end
 
-  def add(name, value) do
-    # 3. Store to bucket `{name, value}`, call (sync) the server `:add` 
-    GenServer.call(__MODULE__, {:add, {name, value}})
-  end
 
-  def delete(name) do
-    # 4. Delete from bucket `name`, cast (async) the server `:add`
-    GenServer.cast(__MODULE__, {:delete, name})
-  end
+  def add(
+        %{
+          merchant_id: merchant_id,
+          schema: schema
+        } = merchant_schema
+      ) do
+    case Repo.get_by(SchemaTable, merchant_id: merchant_id) do
+      nil ->
+        struct(SchemaTable, merchant_schema)
+        |> changeset(%{})
+        |> Repo.insert()
+        |> case do
+          {:ok, stored_schema} ->
+            Map.delete(stored_schema, :__struct__)
+            |> Map.delete(:__meta__)
+            |> Map.delete(:merchant_id)
+            |> Map.delete(:id)
+            |> Map.delete(:inserted_at)
+            |> Map.delete(:updated_at)
 
-  def list do
-    # 2. tab2list is now done directly in ETS, without accessing the server
-    list_found =
-      :ets.tab2list(__MODULE__)
-      # |> Enum.into(%{})
-      |> Enum.map(fn {_k, v} -> v end)
+          {:error, _} ->
+            "Error Schema already exists"
+        end
 
-    # |> Jason.encode!()
+      stored_schema ->
+        stored_schema
+        |> changeset(%{schema: schema})
+        |> Repo.update()
+        |> case do
+          {:ok, stored_schema} ->
+            Map.delete(stored_schema, :__struct__)
+            |> Map.delete(:__meta__)
+            |> Map.delete(:merchant_id)
+            |> Map.delete(:id)
+            |> Map.delete(:inserted_at)
+            |> Map.delete(:updated_at)
 
-    list_found
-  end
-
-  ## Server
-  def init(_) do
-    Logger.info("Initializing Schema Table")
-
-    table_name =
-      PersistentEts.new(
-        __MODULE__,
-        Application.app_dir(:fidelity_rule_engine, "priv/fidelity_schema_table.tab"),
-        [
-          :named_table
-        ]
-      )
-
-    {:ok, table_name}
-  end
-
-  def handle_call({:add, {name, value}}, _from, __MODULE__) do
-    :ets.insert(__MODULE__, {name, value})
-
-    {:reply, :ok, __MODULE__}
-
-    # end
-  end
-
-  def handle_cast({:delete, name}, __MODULE__) do
-    # 6. Read and write to the ETS table
-    # IO.inspect name
-    case lookup(name) do
-      {:ok, _value} ->
-        :ets.delete(__MODULE__, name)
-        {:noreply, __MODULE__}
-
-      :error ->
-        {:noreply, __MODULE__}
-
-      :notfound ->
-        {:noreply, __MODULE__}
+          {:error, _} ->
+            "Error Schema already exists"
+        end
     end
   end
 
-  def handle_info(_msg, state) do
-    {:noreply, state}
+  def changeset(struc, attrs \\ %{}) do
+    struc
+    |> cast(attrs, [:merchant_id, :schema])
+    |> unique_constraint(:merchant_id)
+  end
+
+  def delete(merchant_id) do
+    case Repo.get_by(SchemaTable, merchant_id: merchant_id) do
+      nil ->
+        :error
+
+      rule ->
+        Repo.delete(rule)
+        |> case do
+          {:ok, _rule} ->
+            :ok
+
+          # Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)
+          {:error, _} ->
+            :error
+        end
+    end
+  end
+
+  def list(merchant_id) do
+    # query = "select * from rules_table where merchant_id=#{merchant_id}"
+    # query = from u in "rules_table",
+    #       where: u.merchant_id == ^merchant_id,
+    #       select: u.*
+
+    query = from(SchemaTable, where: [merchant_id: ^merchant_id], select: [:schema])
+
+    # RulesTables 
+    Repo.all(query)
+    |> case do
+      [] ->
+        "No schema defined in DB"
+
+      schema ->
+        Enum.map(schema, fn x ->
+          Map.delete(x, :__struct__)
+          |> Map.delete(:__meta__)
+          |> Map.delete(:merchant_id)
+          |> Map.delete(:id)
+          |> Map.delete(:inserted_at)
+          |> Map.delete(:updated_at)
+        end)
+    end
   end
 end
