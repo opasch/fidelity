@@ -1,121 +1,123 @@
 defmodule FidelityRuleEngine.Tables.RulesGroup do
   @moduledoc """
-  Agent for RulesGroup table.
-  Later cam migrate to an ecto DB call
+  Rules Table Repo Helper.
+
   """
-  use GenServer
+  alias FidelityRuleEngine.Repo
+  alias FidelityRuleEngine.Schemas.RulesGroupTable
   require Logger
-
-  ## Client
-
-  @doc """
-  Starts the registry with the given options.
-
-  `:name` is always required.
-  """
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
-  end
+  import Ecto.Changeset
+  import Ecto.Query
 
   @doc """
-  Looks up the bucket `name` stored in `FidelityRuleEngine.Tables.RulesGroup`.
+  Function to lookup for specific rule from Database
 
-  Returns `{:ok, "value"}` if the bucket exists, `:error` otherwise.
+  Returns `{:ok, "value"}` if the rule exists, `:error` otherwise.
   """
-  def lookup(name) do
-    # 2. Lookup is now done directly in ETS, without accessing the server
-    case :ets.lookup(__MODULE__, name) do
-      # [{^name, msg}] -> msg 
-      [{^name, msg}] -> {:ok, msg}
-      [] -> :notfound
+  def lookup(merchant_id, name) do
+    case Repo.get_by(RulesGroupTable, name: merchant_id <> "_" <> name) do
+      nil ->
+        :notfound
+
+      rule ->
+        # Note the manipulation of the Rule name.
+        {:ok,
+         Map.delete(rule, :__struct__)
+         |> Map.delete(:__meta__)
+         |> Map.delete(:merchant_id)
+         |> Map.delete(:id)
+         |> Map.put(:name, name)
+         |> Map.delete(:inserted_at)
+         |> Map.delete(:updated_at)}
     end
   end
 
-  def lookup!(name) do
-    # 2. Lookup is now done directly in ETS, without accessing the server
-    case :ets.lookup(__MODULE__, name) do
-      # [{^name, msg}] -> msg 
-      [{^name, msg}] -> msg
-      [] -> nil
+  def lookup!(merchant_id, name) do
+    case Repo.get_by(RulesGroupTable, name: merchant_id <> "_" <> name) do
+      nil ->
+        nil
+
+      rule ->
+        Map.delete(rule, :__struct__)
+        |> Map.delete(:__meta__)
+        |> Map.delete(:merchant_id)
+        |> Map.delete(:id)
+        |> Map.put(:name, name)
+        |> Map.delete(:inserted_at)
+        |> Map.delete(:updated_at)
     end
   end
 
-  # def add(%{name: name, type: type, rules: rules, priority: priority, description: description}) do
-  def add(name, value) do
-    # 3. Store to bucket `{name, value}`, cast (async) the server `:add` 
-    # value = 
-    # %{
-    #   name: name,
-    #   priority: priority,
-    #   type: type,
-    #   rules: Enum.map(rules, fn x -> FidelityRuleEngine.Tables.Rules.lookup!(x) end) |> Enum.reject(&is_nil/1)
-    # }
-    GenServer.cast(__MODULE__, {:add, {name, value}})
+  def add(rule_group) do
+    struct(RulesGroupTable, rule_group)
+    |> changeset(%{})
   end
 
-  def delete(name) do
-    # 4. Delete from bucket `name`, cast (async) the server `:add`
-    GenServer.cast(__MODULE__, {:delete, name})
+  def changeset(struc, attrs \\ %{}) do
+    struc
+    |> cast(attrs, [:type, :rules, :name, :merchant_id, :priority])
+    # |> change(name: :merchant_id)
+    |> unique_constraint(:name)
+    |> Repo.insert()
+    |> case do
+      {:ok, rule} ->
+        Map.delete(rule, :__struct__)
+        |> Map.delete(:__meta__)
+        |> Map.delete(:merchant_id)
+        |> Map.delete(:id)
+        |> Map.delete(:inserted_at)
+        |> Map.delete(:updated_at)
+
+      {:error, _} ->
+        "Error Group Rule already exists"
+    end
   end
 
-  def list do
-    # 2. tab2list is now done directly in ETS, without accessing the server
-    list_found =
-      :ets.tab2list(__MODULE__)
-      # |> Enum.into(%{})
-      |> Enum.map(fn {_k, v} -> v end)
+  def delete(merchant_id, name) do
+    case Repo.get_by(RulesGroupTable, name: merchant_id <> "_" <> name) do
+      nil ->
+        :error
 
-    # |> Jason.encode!()
+      rule ->
+        Repo.delete(rule)
+        |> case do
+          {:ok, _rule} ->
+            :ok
 
-    list_found
+          # Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id)
+          {:error, _} ->
+            :error
+        end
+    end
   end
 
-  ## Server
-  def init(_) do
-    Logger.info("Initializing RulesGroup Table")
+  def list(merchant_id) do
+    # query = "select * from rules_group_table where merchant_id=#{merchant_id}"
+    # Create a query
+    # query = from u in "rules_group_table",
+    #           where: u.merchant_id == ^merchant_id,
+    #           select: u.*
 
-    table_name =
-      PersistentEts.new(
-        __MODULE__,
-        Application.app_dir(:fidelity_rule_engine, "priv/fidelity_rules_group_table.tab"),
-        [
-          :named_table
-        ]
+    query =
+      from(RulesGroupTable,
+        where: [merchant_id: ^merchant_id],
+        select: [:description, :name, :priority, :type, :rules]
       )
 
-    {:ok, table_name}
-  end
+    Repo.all(query)
+    |> case do
+      [] ->
+        "No Group Rules defined in DB"
 
-  def handle_cast({:add, {name, value}}, __MODULE__) do
-    # 5. Read and write to the ETS table
-    # IO.inspect name
-    case lookup(name) do
-      {:ok, _value} ->
-        {:noreply, __MODULE__}
-
-      :notfound ->
-        :ets.insert(__MODULE__, {name, value})
-        {:noreply, __MODULE__}
+      rule ->
+        Enum.map(rule, fn x ->
+          Map.delete(x, :__struct__)
+          |> Map.delete(:__meta__)
+          |> Map.delete(:merchant_id)
+          |> Map.delete(:id)
+          |> Map.delete(:inserted_at)
+          |> Map.delete(:updated_at)
+        end)
     end
-  end
-
-  def handle_cast({:delete, name}, __MODULE__) do
-    # 6. Read and write to the ETS table
-    # IO.inspect name
-    case lookup(name) do
-      {:ok, _value} ->
-        :ets.delete(__MODULE__, name)
-        {:noreply, __MODULE__}
-
-      :error ->
-        {:noreply, __MODULE__}
-
-      :notfound ->
-        {:noreply, __MODULE__}
-    end
-  end
-
-  def handle_info(_msg, state) do
-    {:noreply, state}
   end
 end

@@ -15,13 +15,13 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
   Returns : json response
 
   """
-  def rules_list() do
-    Utils.render(Rules.list())
+  def rules_list(merchant_id) do
+    Utils.render(Rules.list(merchant_id))
   end
 
   @spec rule_lookup(String.t(), String.t()) :: map()
   def rule_lookup(merchant_id, id) do
-    case Rules.lookup(merchant_id <> "_" <> id) do
+    case Rules.lookup(merchant_id, id) do
       # [{^name, msg}] -> msg 
       {:ok, msg} ->
         Utils.render(msg)
@@ -50,7 +50,8 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
            FidelityRuleEngine.RuleLogic.Conditions.check_conditions(condition),
          {:ok, _actions_checked} <- FidelityRuleEngine.RuleLogic.Actions.check_actions(actions) do
       rule = %{
-        name: name,
+        merchant_id: merchant_id,
+        name: merchant_id <> "_" <> name,
         priority: priority,
         # description: description_text <> description,
         description: description,
@@ -60,7 +61,8 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
         actions: actions
       }
 
-      Utils.render(Rules.add(merchant_id <> "_" <> name, rule))
+      # Utils.render(Rules.add(merchant_id <> "_" <> name, rule))
+      Utils.render(Rules.add(rule))
     else
       {:error, reason} ->
         Utils.render(reason)
@@ -79,7 +81,7 @@ defmodule FidelityRuleEngine.Interfaces.RulesInterface do
   def delete_rule(merchant_id, name) do
     # TODO: add detailed error message handling later
     # IO.inspect id 
-    case Rules.delete(merchant_id <> "_" <> name) do
+    case Rules.delete(merchant_id, name) do
       # [{^name, msg}] -> msg 
       :ok ->
         Utils.render("Deleted")

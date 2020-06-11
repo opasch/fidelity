@@ -25,7 +25,8 @@ defmodule FidelityRuleEngine.Stages.MessageHandler do
           qos: [
             prefetch_count: 50
           ],
-          on_failure: :reject
+          on_failure: :reject,
+          metadata: [:headers, :user_id]
         },
         concurrency: 5
         # ]
