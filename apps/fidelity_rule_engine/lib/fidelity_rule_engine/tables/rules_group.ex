@@ -55,7 +55,7 @@ defmodule FidelityRuleEngine.Tables.RulesGroup do
 
   def changeset(struc, attrs \\ %{}) do
     struc
-    |> cast(%{}, [:type, :rules, :name, :merchant_id, :priority])
+    |> cast(attrs, [:type, :rules, :name, :merchant_id, :priority])
     # |> change(name: :merchant_id)
     |> unique_constraint(:name)
     |> Repo.insert()
@@ -69,7 +69,7 @@ defmodule FidelityRuleEngine.Tables.RulesGroup do
         |> Map.delete(:updated_at)
 
       {:error, _} ->
-        "Error Rule already exists"
+        "Error Group Rule already exists"
     end
   end
 
@@ -107,7 +107,7 @@ defmodule FidelityRuleEngine.Tables.RulesGroup do
     Repo.all(query)
     |> case do
       [] ->
-        "No Rules defined in DB"
+        "No Group Rules defined in DB"
 
       rule ->
         Enum.map(rule, fn x ->

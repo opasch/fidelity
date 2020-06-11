@@ -13,9 +13,8 @@ defmodule FidelityRuleEngine.Tables.Rules do
   # @optional_fields ~w(description)
 
   def check_rules(list_rules) when is_list(list_rules) do
-    rules_list_checked =
-      Enum.map(list_rules, &FidelityRuleEngine.Tables.Rules.lookup(&1))
-      |> IO.inspect()
+    rules_list_checked = Enum.map(list_rules, &FidelityRuleEngine.Tables.Rules.lookup(&1))
+    # |> IO.inspect()
 
     case Enum.member?(rules_list_checked, :notfound) do
       true -> {:error, "One of the rule does not exist"}
@@ -58,15 +57,14 @@ defmodule FidelityRuleEngine.Tables.Rules do
       rule ->
         # Note the manipulation of the Rule name.
         Map.delete(rule, :__struct__)
-         |> Map.delete(:__meta__)
-         |> Map.delete(:merchant_id)
-         |> Map.delete(:id)
-         |> Map.put(:name, name)
-         |> Map.delete(:inserted_at)
-         |> Map.delete(:updated_at)
+        |> Map.delete(:__meta__)
+        |> Map.delete(:merchant_id)
+        |> Map.delete(:id)
+        |> Map.put(:name, name)
+        |> Map.delete(:inserted_at)
+        |> Map.delete(:updated_at)
     end
   end
-
 
   # def lookup!(merchant_id, name) do
   #   full_name = merchant_id <> "_" <> name
@@ -89,13 +87,13 @@ defmodule FidelityRuleEngine.Tables.Rules do
   #       # Enum.map(rule, fn x -> Map.delete(x, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) |> Map.delete(:id) |> Map.delete(:inserted_at) |> Map.delete(:updated_at) end)
   #   end
 
-    # case Repo.get_by(RulesTable, name: merchant_id <> "_" <> name) do
-    #   nil ->
-    #     nil
+  # case Repo.get_by(RulesTable, name: merchant_id <> "_" <> name) do
+  #   nil ->
+  #     nil
 
-    #   rule ->
-    #     Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) |> Map.delete(:id) |> Map.put(:name, name)
-    # end
+  #   rule ->
+  #     Map.delete(rule, :__struct__) |> Map.delete(:__meta__) |> Map.delete(:merchant_id) |> Map.delete(:id) |> Map.put(:name, name)
+  # end
   # end
 
   @doc """
@@ -121,9 +119,6 @@ defmodule FidelityRuleEngine.Tables.Rules do
     end
   end
 
-
-
-
   def add(rule) do
     struct(RulesTable, rule)
     |> changeset(%{})
@@ -141,6 +136,8 @@ defmodule FidelityRuleEngine.Tables.Rules do
         |> Map.delete(:__meta__)
         |> Map.delete(:merchant_id)
         |> Map.delete(:id)
+        |> Map.delete(:inserted_at)
+        |> Map.delete(:updated_at)
 
       {:error, _} ->
         "Error Rule already exists"
@@ -189,6 +186,8 @@ defmodule FidelityRuleEngine.Tables.Rules do
           |> Map.delete(:__meta__)
           |> Map.delete(:merchant_id)
           |> Map.delete(:id)
+          |> Map.delete(:inserted_at)
+          |> Map.delete(:updated_at)
         end)
     end
   end

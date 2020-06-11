@@ -103,7 +103,7 @@ defmodule FidelityRuleEngine.Interfaces.RulesSetInterfaces do
     # with {:ok, _rules_checked} <-
     #        FidelityRuleEngine.RulesHelper.check_rules(merchant_id, rules) do
 
-      Utils.render(RulesSet.delete(merchant_id))
+    Utils.render(RulesSet.delete(merchant_id))
     # else
     #   {:error, reason} ->
     #     Utils.render(reason)
@@ -117,6 +117,4 @@ defmodule FidelityRuleEngine.Interfaces.RulesSetInterfaces do
       "Oops, Wrong payload Format, It should be {\"merchant_id\" => merchant_id,\"rules\" => rules}"
     )
   end
-
-
 end

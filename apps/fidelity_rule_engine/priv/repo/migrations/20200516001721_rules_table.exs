@@ -1,6 +1,7 @@
 defmodule FidelityRuleEngine.Repo.Migrations.RulesTable do
   use Ecto.Migration
-  @timestamps_opts [type: :utc_datetime, usec: true]
+  # @timestamps_opts [type: :utc_datetime, usec: true]
+  @timestamps_opts [type: :utc_datetime, usec: Mix.env != :test]
 
   def change do
     create table("rules_table") do
@@ -11,7 +12,8 @@ defmodule FidelityRuleEngine.Repo.Migrations.RulesTable do
       add :merchant_id, :string
       add :condition, :map
 
-      timestamps @timestamps_opts
+      timestamps()
+      # timestamps @timestamps_opts
     end
 
     create unique_index(:rules_table, [:name])

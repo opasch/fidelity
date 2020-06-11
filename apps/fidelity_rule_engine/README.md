@@ -183,7 +183,7 @@ iex(119)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.rules_set_lookup("123
 
 ```elixir
 iex(31)> FidelityRuleEngine.Interfaces.RulesSetInterfaces.add_rule(%{"merchant_id" => "1234","rules" => ["test","Group_test"]})
-%{response: :ok}
+%{response: %{rules: ["test_1", "Group_test"]}}
 ```
 
 **Delete Rule Set** 

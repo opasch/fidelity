@@ -10,7 +10,7 @@ defmodule FidelityRuleEngine.Schemas.RulesTable do
     field(:merchant_id, :string)
     field(:condition, :map)
 
-    timestamps @timestamps_opts
+    timestamps(@timestamps_opts)
   end
 
   # @required_fields ~w(name actions priority merchant_id condition)

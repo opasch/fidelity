@@ -3,9 +3,9 @@ defmodule FidelityRuleEngine.RulesTest do
   use FidelityRuleEngine.RepoCase
 
   test "List all Rules" do
-    rules_list = FidelityRuleEngine.Interfaces.RulesInterface.rules_list()
-    assert rules_list == %{response: []}
-    IO.inspect(rules_list)
+    rules_list = FidelityRuleEngine.Interfaces.RulesInterface.rules_list("1234")
+    assert rules_list == %{response: "No Rules defined in DB"}
+    # IO.inspect(rules_list)
   end
 
   test "Add Rule" do
@@ -29,21 +29,7 @@ defmodule FidelityRuleEngine.RulesTest do
              }
            }
 
-    IO.inspect(add_rule)
-  end
-
-  test "List Rule" do
-    add_rule = FidelityRuleEngine.Interfaces.RulesInterface.rule_lookup("1234", "test")
-
-    assert add_rule == %{
-             response: %{
-               actions: ["store"],
-               condition: %{"ti_gt" => 4},
-               description: "",
-               name: "1234_test",
-               priority: 1
-             }
-           }
+    # IO.inspect(add_rule)
   end
 
   test "List Non Existent Rule" do
@@ -52,6 +38,16 @@ defmodule FidelityRuleEngine.RulesTest do
   end
 
   test "Add Rule that already exists" do
+    %{response: _} =
+      FidelityRuleEngine.Interfaces.RulesInterface.add_rule(%{
+        "merchant_id" => "1234",
+        "name" => "test",
+        "priority" => 1,
+        "description" => "",
+        "actions" => ["store"],
+        "condition" => %{"ti_gt" => 4}
+      })
+
     add_rule =
       FidelityRuleEngine.Interfaces.RulesInterface.add_rule(%{
         "merchant_id" => "1234",
@@ -66,6 +62,16 @@ defmodule FidelityRuleEngine.RulesTest do
   end
 
   test "Delete Existent Rule" do
+    %{response: _} =
+      FidelityRuleEngine.Interfaces.RulesInterface.add_rule(%{
+        "merchant_id" => "1234",
+        "name" => "test",
+        "priority" => 1,
+        "description" => "",
+        "actions" => ["store"],
+        "condition" => %{"ti_gt" => 4}
+      })
+
     delete_rule = FidelityRuleEngine.Interfaces.RulesInterface.delete_rule("1234", "test")
     assert delete_rule == %{response: "Deleted"}
   end

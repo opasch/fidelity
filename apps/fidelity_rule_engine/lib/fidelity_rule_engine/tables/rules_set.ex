@@ -39,18 +39,16 @@ defmodule FidelityRuleEngine.Tables.RulesSet do
       rule ->
         # Note the manipulation of the Rule name.
         %{rules: found_rules} =
-         Map.delete(rule, :__struct__)
-         |> Map.delete(:__meta__)
-         |> Map.delete(:merchant_id)
-         |> Map.delete(:id)
-         |> Map.delete(:inserted_at)
-         |> Map.delete(:updated_at)
-        
+          Map.delete(rule, :__struct__)
+          |> Map.delete(:__meta__)
+          |> Map.delete(:merchant_id)
+          |> Map.delete(:id)
+          |> Map.delete(:inserted_at)
+          |> Map.delete(:updated_at)
+
         found_rules
     end
   end
-
-
 
   # def lookup!(merchant_id) do
   #   query = from(RulesSetTable, where: [merchant_id: ^merchant_id], select: [:rules])
@@ -68,15 +66,16 @@ defmodule FidelityRuleEngine.Tables.RulesSet do
   #   end
   # end
 
-  def add(%{
-        merchant_id: merchant_id,
-        rules: rules
-      } = rule_set) do
-
+  def add(
+        %{
+          merchant_id: merchant_id,
+          rules: rules
+        } = rule_set
+      ) do
     case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
-      nil -> 
+      nil ->
         struct(RulesSetTable, rule_set)
-        |> IO.inspect(label: "before changeset") 
+        # |> IO.inspect(label: "before changeset")
         |> changeset(%{})
         |> Repo.insert()
         |> case do
@@ -87,12 +86,14 @@ defmodule FidelityRuleEngine.Tables.RulesSet do
             |> Map.delete(:id)
             |> Map.delete(:inserted_at)
             |> Map.delete(:updated_at)
+
           {:error, _} ->
             "Error Rule already exists"
         end
-      rule_set_list -> 
+
+      rule_set_list ->
         rule_set_list
-        |> changeset(%{rules: rule_set_list.rules ++ rules   |> Enum.uniq})
+        |> changeset(%{rules: (rule_set_list.rules ++ rules) |> Enum.uniq()})
         |> Repo.update()
         |> case do
           {:ok, rule} ->
@@ -102,6 +103,7 @@ defmodule FidelityRuleEngine.Tables.RulesSet do
             |> Map.delete(:id)
             |> Map.delete(:inserted_at)
             |> Map.delete(:updated_at)
+
           {:error, _} ->
             "Error Rule already exists"
         end
@@ -111,37 +113,40 @@ defmodule FidelityRuleEngine.Tables.RulesSet do
   def remove(%{
         merchant_id: merchant_id,
         rules: rules
-      } = rule_set) do
-
+        # } = rule_set
+      }) do
     case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
-      nil -> 
-        :error 
-      rule_set_list -> 
+      nil ->
+        :error
+
+      rule_set_list ->
         rule_set_list
-        |> changeset(%{rules: rule_set_list.rules ++ rules   |> Enum.uniq})
+        |> changeset(%{rules: (rule_set_list.rules ++ rules) |> Enum.uniq()})
         |> Repo.update()
         |> case do
-        {:ok, rule} ->
-          Map.delete(rule, :__struct__)
-          |> Map.delete(:__meta__)
-          |> Map.delete(:merchant_id)
-          |> Map.delete(:id)
-          |> Map.delete(:inserted_at)
-          |> Map.delete(:updated_at)
-        {:error, _} ->
-          "Error Rule already exists"
-      end
+          {:ok, rule} ->
+            Map.delete(rule, :__struct__)
+            |> Map.delete(:__meta__)
+            |> Map.delete(:merchant_id)
+            |> Map.delete(:id)
+            |> Map.delete(:inserted_at)
+            |> Map.delete(:updated_at)
+
+          {:error, _} ->
+            "Error Rule already exists"
+        end
     end
   end
 
+  def remove(_) do
+    :error
+  end
 
   def changeset(struc, attrs \\ %{}) do
     struc
     |> cast(attrs, [:merchant_id, :rules])
     |> unique_constraint(:merchant_id)
   end
-
-
 
   def delete(merchant_id) do
     case Repo.get_by(RulesSetTable, merchant_id: merchant_id) do
