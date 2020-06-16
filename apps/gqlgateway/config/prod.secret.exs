@@ -13,7 +13,8 @@ config :gqlgateway, Gqlgateway.Repo,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
 
 secret_key_base =
-  System.get_env("SECRET_KEY_BASE") || "+NeGlWjNAMvur2LXD9ytr1D3YOfUlHxpCqYkqlXz0/NaToZmK3d6zZJ8ZCKPRTj6"
+  System.get_env("SECRET_KEY_BASE") ||
+    "+NeGlWjNAMvur2LXD9ytr1D3YOfUlHxpCqYkqlXz0/NaToZmK3d6zZJ8ZCKPRTj6"
 
 config :gqlgateway, GqlgatewayWeb.Endpoint,
   http: [

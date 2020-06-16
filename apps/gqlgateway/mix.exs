@@ -40,15 +40,15 @@ defmodule Gqlgateway.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_dashboard, "~> 0.1.0"},
-      {:telemetry_metrics, "~> 0.4"},
+      {:phoenix_live_dashboard, "~> 0.2"},
+      {:telemetry_metrics, "~> 0.5"},
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
-	
+      {:plug_cowboy, "~> 2.3"},
+
       # silence warn about poison
-      {:poison, "~> 3.1"},
+      {:poison, "~> 4.0"},
 
       # gql deps
       {:absinthe, "~> 1.4"},
@@ -62,12 +62,15 @@ defmodule Gqlgateway.MixProject do
       {:comeonin, "~> 5.3"},
       {:argon2_elixir, "~> 2.3"},
 
+      # testing web pages
+      {:wallaby, "~> 0.23.0", [runtime: false, only: :test]},
+
       # for basic admin authorization
       {:basic_auth, "~> 2.2.2"},
-	
+
       # credo for static code analysis
-      {:credo, "~> 1.3.0", only: [:dev, :test], runtime: false}
-   ]
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

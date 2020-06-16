@@ -15,9 +15,12 @@ config :gqlgateway, Gqlgateway.Accounts.Guardian,
   secret_key: "b4Kw55rcFSWYqExT469SJ9gB1TRW7ul0X4RnTVBAE3ulxAvBUNamirx53xUhIAtS"
 
 config :guardian, Guardian.DB,
-  repo: Gqlgateway.Repo, # Add your repository module
-  schema_name: "guardian_tokens", # default
-  sweep_interval: 60 # default: 60 minutes
+  # Add your repository module
+  repo: Gqlgateway.Repo,
+  # default
+  schema_name: "guardian_tokens",
+  # default: 60 minutes
+  sweep_interval: 60
 
 # Configures the endpoint
 config :gqlgateway, GqlgatewayWeb.Endpoint,
@@ -35,11 +38,12 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :gqlgateway, admin_credentials: [
-  username: "admin",
-  password: "password",
-  realm: "Admin Area"
-]
+config :gqlgateway,
+  admin_credentials: [
+    username: "admin",
+    password: "password",
+    realm: "Admin Area"
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
