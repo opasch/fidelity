@@ -1,35 +1,35 @@
 defmodule GqlgatewayWeb.Schema.Types do
-    use Absinthe.Schema.Notation
-    
-    import AbsintheErrorPayload.Payload
-    import_types AbsintheErrorPayload.ValidationMessageTypes
+  use Absinthe.Schema.Notation
 
-    object :user do
-        field :id, :id
-        field :email, :string
-        field :username, :string
-    end
+  import AbsintheErrorPayload.Payload
+  import_types(AbsintheErrorPayload.ValidationMessageTypes)
 
-    payload_object(:user_payload, :user)
+  object :user do
+    field :id, :id
+    field :email, :string
+    field :username, :string
+  end
 
-    input_object :create_user_params do
-        field :email, non_null(:string)
-        field :username, non_null(:string)
-        field :password, non_null(:string)
-    end
+  payload_object(:user_payload, :user)
 
-    object :auth_token do
-        field :token, :string
-    end
+  input_object :create_user_params do
+    field :email, non_null(:string)
+    field :username, non_null(:string)
+    field :password, non_null(:string)
+  end
 
-    payload_object(:auth_token_payload, :auth_token)
+  object :auth_token do
+    field :token, :string
+  end
 
-    input_object :login_params do
-        field :username, non_null(:string)
-        field :password, non_null(:string)
-    end
+  payload_object(:auth_token_payload, :auth_token)
 
-    input_object :logout_params do
-        field :token, non_null(:string)
-    end
+  input_object :login_params do
+    field :username, non_null(:string)
+    field :password, non_null(:string)
+  end
+
+  input_object :logout_params do
+    field :token, non_null(:string)
+  end
 end

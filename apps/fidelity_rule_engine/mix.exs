@@ -39,7 +39,7 @@ defmodule FidelityRuleEngine.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:persistent_ets, "~> 0.2.0"},
       {:ex_json_schema, "~> 0.7.0"},
-      {:credo, "~> 1.3.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21.0", only: :dev},
       {:excoveralls, "~> 0.12.0", only: :test},
       {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false}

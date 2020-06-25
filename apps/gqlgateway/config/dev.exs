@@ -1,14 +1,5 @@
 use Mix.Config
 
-# Configure your database
-config :gqlgateway, Gqlgateway.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "gqlgateway_dev",
-  hostname: "192.168.1.91",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -20,7 +11,15 @@ config :gqlgateway, GqlgatewayWeb.Endpoint,
   debug_errors: true,
   code_reloader: false,
   check_origin: false,
-  watchers: []
+  watchers: [
+    node: [
+      "node_modules/webpack/bin/webpack.js",
+      "--mode",
+      "development",
+      "--watch-stdin",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #
@@ -46,6 +45,18 @@ config :gqlgateway, GqlgatewayWeb.Endpoint,
 # configured to run both http and https servers on
 # different ports.
 
+# Watch static and templates for browser reloading.
+config :gqlgateway, GqlgatewayWeb.Endpoint,
+  live_reload: [
+    patterns: [
+      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/gettext/.*(po)$",
+      ~r"lib/curious_messenger_web/{live,views}/.*(ex)$",
+      ~r"lib/curious_messenger_web/templates/.*(eex)$",
+      ~r{lib/user_liveview_web/live/.*(ex)$}
+    ]
+  ]
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
@@ -55,3 +66,5 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+import_config "dev.secret.exs"

@@ -50,7 +50,6 @@ defmodule FidelityRuleEngine.Tables.Schema do
     end
   end
 
-
   def add(
         %{
           merchant_id: merchant_id,

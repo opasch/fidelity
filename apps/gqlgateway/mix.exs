@@ -40,6 +40,8 @@ defmodule Gqlgateway.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
+      {:phoenix_live_view, "~> 0.13.2"},
+      {:floki, ">= 0.0.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.2"},
       {:telemetry_metrics, "~> 0.5"},
       {:telemetry_poller, "~> 0.4"},
@@ -69,7 +71,8 @@ defmodule Gqlgateway.MixProject do
       {:basic_auth, "~> 2.2.2"},
 
       # credo for static code analysis
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:pow, "~> 1.0.14"}
     ]
   end
 

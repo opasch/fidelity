@@ -48,5 +48,10 @@ defmodule GqlgatewayWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+
+  plug Pow.Plug.Session,
+    otp_app: :gqlgateway,
+    cache_store_backend: Pow.Store.Backend.MnesiaCache
+
   plug GqlgatewayWeb.Router
 end

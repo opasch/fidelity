@@ -38,12 +38,17 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :gqlgateway,
-  admin_credentials: [
-    username: "admin",
-    password: "password",
-    realm: "Admin Area"
-  ]
+# config :gqlgateway,
+#   admin_credentials: [
+#     username: "admin",
+#     password: "password",
+#     realm: "Admin Area"
+#   ]
+
+config :gqlgateway, :pow,
+  user: Gqlgateway.Accounts.User,
+  repo: Gqlgateway.Repo,
+  web_module: GqlgatewayWeb
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

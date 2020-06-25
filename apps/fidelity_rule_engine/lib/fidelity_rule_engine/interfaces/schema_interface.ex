@@ -23,7 +23,6 @@ defmodule FidelityRuleEngine.Interfaces.SchemaInterfaces do
     Utils.render(rule_set_lookup_result)
   end
 
-
   @doc """
   Add rule set to db
 
@@ -31,13 +30,13 @@ defmodule FidelityRuleEngine.Interfaces.SchemaInterfaces do
 
   """
   @spec add_schema(Map.t()) :: Map.t()
-  def add_schema(%{
-        "merchant_id" => merchant_id,
-        "schema" => schema
-      } = schema_set) do
-
-      Utils.render(Schema.add(schema_set))
-
+  def add_schema(
+        %{
+          "merchant_id" => merchant_id,
+          "schema" => schema
+        } = schema_set
+      ) do
+    Utils.render(Schema.add(schema_set))
   end
 
   def add_schema(_) do
@@ -49,12 +48,12 @@ defmodule FidelityRuleEngine.Interfaces.SchemaInterfaces do
   end
 
   @spec delete_schema(Map.t()) :: Map.t()
-  def delete_schame(%{
-        "merchant_id" => merchant_id
-      } = schema_set) do
-
-      Utils.render(Schema.remove(schema_set))
-
+  def delete_schame(
+        %{
+          "merchant_id" => merchant_id
+        } = schema_set
+      ) do
+    Utils.render(Schema.remove(schema_set))
   end
 
   def delete_schema(_) do

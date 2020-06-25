@@ -7,9 +7,10 @@ defmodule Gqlgateway.Accounts do
   alias Gqlgateway.Repo
 
   alias Gqlgateway.Accounts.User
-  
+
   alias Argon2
 
+  @type t :: %User{}
   @doc """
   Returns the list of users.
 
@@ -108,16 +109,17 @@ defmodule Gqlgateway.Accounts do
     User.changeset(user, attrs)
   end
 
-
   @doc """
   Authenticates an User using Argon2
   """
   def authenticate_user(username, plain_text_password) do
     query = from u in User, where: u.username == ^username
+
     case Repo.one(query) do
       nil ->
         Argon2.no_user_verify()
         {:error, :invalid_credentials}
+
       user ->
         if Argon2.verify_pass(plain_text_password, user.password_hash) do
           {:ok, user}
@@ -131,4 +133,19 @@ defmodule Gqlgateway.Accounts do
   def is_customer?(%User{} = user), do: has_role?(user, "customer")
 
   defp has_role?(%User{} = user, role), do: Enum.any?(user.roles, &(&1 == role))
+
+  @spec create_admin(map()) :: {:ok, t()} | {:error, Ecto.Changeset.t()}
+  def create_admin(params) do
+    %User{}
+    |> User.changeset(params)
+    |> User.changeset_role(%{role: "admin"})
+    |> Repo.insert()
+  end
+
+  @spec set_admin_role(t()) :: {:ok, t()} | {:error, Ecto.Changeset.t()}
+  def set_admin_role(user) do
+    user
+    |> User.changeset_role(%{role: "admin"})
+    |> Repo.update()
+  end
 end

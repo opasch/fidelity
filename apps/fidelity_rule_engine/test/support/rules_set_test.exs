@@ -70,5 +70,4 @@ defmodule FidelityRuleEngine.RulesSetTest do
 
     assert add_rule == %{response: %{rules: ["test_1", "Group_test"]}}
   end
-
 end

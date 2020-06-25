@@ -11,7 +11,7 @@ defmodule Gqlgateway.Accounts.Guardian do
     user = Accounts.get_user!(id)
     {:ok, user}
   rescue
-    Ecto.NoResultsError -> 
+    Ecto.NoResultsError ->
       {:error, :resource_not_found}
   end
 

@@ -15,6 +15,8 @@ defmodule Gqlgateway.Application do
       {Phoenix.PubSub, name: Gqlgateway.PubSub},
       # Start the Endpoint (http/https)
       GqlgatewayWeb.Endpoint,
+      # Cache Store
+      Pow.Store.Backend.MnesiaCache,
       # GuardianDB sweeper
       {Guardian.DB.Token.SweeperServer, []}
     ]

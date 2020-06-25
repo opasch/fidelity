@@ -28,7 +28,7 @@ defmodule GqlgatewayWeb.Resolver.Accounts do
 
   def logout(_parent, _params, %{context: %{current_user_claims: claims}}) do
     with %{jwt: jwt} <- Guardian.DB.Token.find_by_claims(claims),
-         {:ok, _}    <- Accounts.Guardian.revoke(jwt) do
+         {:ok, _} <- Accounts.Guardian.revoke(jwt) do
       {:ok, %{token: jwt}}
     else
       _ ->
@@ -40,7 +40,7 @@ defmodule GqlgatewayWeb.Resolver.Accounts do
     with {:ok, u} <- Accounts.authenticate_user(user.username, user.password),
          true <- has_role?.(u),
          {:ok, jwt, _claims} <- Accounts.Guardian.encode_and_sign(u) do
-    {:ok, %{token: jwt}}
+      {:ok, %{token: jwt}}
     else
       _ ->
         {:error, %{message: "Unable to authenticate"}}
@@ -51,6 +51,7 @@ defmodule GqlgatewayWeb.Resolver.Accounts do
     case Accounts.create_user(user) do
       {:error, changeset} ->
         {:ok, changeset}
+
       {:ok, user} ->
         {:ok, user}
     end

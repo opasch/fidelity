@@ -7,7 +7,11 @@ defmodule Gqlgateway.AccountsTest do
     alias Gqlgateway.Accounts.User
 
     @valid_attrs %{email: "some email", password: "some password", username: "some username"}
-    @update_attrs %{email: "some updated email", password: "some updated password", username: "some updated username"}
+    @update_attrs %{
+      email: "some updated email",
+      password: "some updated password",
+      username: "some updated username"
+    }
     @invalid_attrs %{email: nil, password: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do
@@ -16,7 +20,6 @@ defmodule Gqlgateway.AccountsTest do
         |> Enum.into(@valid_attrs)
         |> Accounts.create_user()
 
-      
       %{user | password: nil}
     end
 
@@ -45,8 +48,10 @@ defmodule Gqlgateway.AccountsTest do
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
       assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
-      assert {:ok, user} = Argon2.check_pass(user, "some updated password", hash_key: :password_hash)
-      
+
+      assert {:ok, user} =
+               Argon2.check_pass(user, "some updated password", hash_key: :password_hash)
+
       assert user.email == "some updated email"
       assert user.username == "some updated username"
     end

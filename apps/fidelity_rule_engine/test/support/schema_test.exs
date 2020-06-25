@@ -7,6 +7,4 @@ defmodule FidelityRuleEngine.SchemaTest do
     assert rules_list == %{response: :notfound}
     # IO.inspect(rules_list)
   end
-
-
 end

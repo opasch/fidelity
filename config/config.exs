@@ -11,7 +11,7 @@ import Config
 
 # import configs from child apps
 for config <- "../apps/*/config/config.exs" |> Path.expand(__DIR__) |> Path.wildcard() do
-	import_config config
+  import_config config
 end
 
 # Sample configuration:
@@ -21,4 +21,4 @@ end
 #       format: "$date $time [$level] $metadata$message\n",
 #       metadata: [:user_id]
 #
-import_config "#{Mix.env()}.exs"
+# import_config "#{Mix.env()}.exs"

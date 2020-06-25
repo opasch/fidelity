@@ -10,9 +10,9 @@ defmodule Fidelity.Umbrella.MixProject do
       deps: deps(),
       releases: [
         testing: [
-	  include_executables_for: [:unix],
+          include_executables_for: [:unix],
           applications: [
-	    gqlgateway: :permanent
+            gqlgateway: :permanent
           ]
         ]
       ]
@@ -25,6 +25,6 @@ defmodule Fidelity.Umbrella.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-  []
+    []
   end
 end

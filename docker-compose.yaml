@@ -10,7 +10,7 @@ services:
                         POSTGRES_PASSWORD: postgres
                         POSTGRES_DB: fidelity-prod
                 volumes:
-                        - db:/var/lib/postgresql/data
+                        - db-data:/var/lib/postgresql/data
                 ports:
                         - "5432:5432"
         
@@ -20,14 +20,30 @@ services:
                 ports:
                         - "8080:8080"
 
-        fidelity-app:
-                container_name: fidelity-app
-                build:
-                        context: .
-                        dockerfile: ./images/Dockerfile
+        rabbitmq:
+                image: rabbitmq:3.8
                 ports:
-                        - "4000:4000"
-                depends_on:
-                        - db
+                        - '5672:5672'
+                        - '15672:15672'
+                        - '15692:15692'
+                volumes:
+                        - ./docker/rabbitmq/plugins:/etc/rabbitmq/enabled_plugins
+                        - ./docker/rabbitmq/definitions_fidelity.json:/etc/rabbitmq/definitions.json
+                        - ./docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+                        - rabbitmq-data:/var/lib/rabbitmq
+
+
+
+        # fidelity-app:
+        #         container_name: fidelity-app
+        #         build:
+        #                 context: .
+        #                 dockerfile: ./images/Dockerfile
+        #         ports:
+        #                 - "4000:4000"
+        #         depends_on:
+        #                 - db
+
 volumes:
-        db:
+  db-data: {}
+  rabbitmq-data: {}
