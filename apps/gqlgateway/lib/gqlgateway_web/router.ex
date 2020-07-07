@@ -67,6 +67,7 @@ defmodule GqlgatewayWeb.Router do
 
     live "/", UserLive.Index
     live "/users", UserLive.Index
+    live "/merchant", MerchantLive, session: %{"user_id" => conn[current_user].id}
 
     # resources "/users", Admin.UserController, only: [:index, :show]
     live_dashboard "/dashboard", metrics: GqlgatewayWeb.Telemetry
@@ -75,13 +76,13 @@ defmodule GqlgatewayWeb.Router do
   scope "/customer", GqlgatewayWeb do
     pipe_through [:browser, :protected, :customer]
 
-    live_dashboard "/", metrics: GqlgatewayWeb.Telemetry
+    # live_dashboard "/", metrics: GqlgatewayWeb.Telemetry
   end
 
   scope "/merchant", GqlgatewayWeb do
     pipe_through [:browser, :protected, :merchant]
 
-    live_dashboard "/", metrics: GqlgatewayWeb.Telemetry
+    live "/", MerchantLive
   end
 
   # scope "/" do

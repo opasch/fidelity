@@ -5,7 +5,8 @@ defmodule GqlgatewayWeb.UserLive.Index do
   alias Gqlgateway.Accounts
   alias GqlgatewayWeb.UserView
 
-  def mount(_session, socket) do
+  def mount(params, _session, socket) do
+    IO.inspect(params)
     {:ok, fetch(socket)}
   end
 
