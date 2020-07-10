@@ -1,0 +1,15 @@
+<h2>Users</h2>
+<table>
+  <thead>
+    <th>Email</th>
+    <th>Role</th>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= user.email %></td>
+      <td><%= user.role %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

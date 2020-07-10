@@ -67,7 +67,7 @@ defmodule GqlgatewayWeb.Router do
 
     live "/", UserLive.Index
     live "/users", UserLive.Index
-    live "/merchant", MerchantLive, session: %{"user_id" => conn[current_user].id}
+    live "/merchant", MerchantLive
 
     # resources "/users", Admin.UserController, only: [:index, :show]
     live_dashboard "/dashboard", metrics: GqlgatewayWeb.Telemetry
