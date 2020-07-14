@@ -145,5 +145,30 @@ defmodule FidelityAppWeb.UserAuth do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(_conn), do: "/"
+  # defp signed_in_path(_conn), do: "/"
+
+
+  defp signed_in_path(conn) do
+    # IO.inspect(conn, label: "roles?????????????")
+    # roles = [:admin,:customer,:merchant]
+    # conn.assigns[:current_user]
+    # |> has_role?(roles)
+    # |> case do
+
+    #   #### TODO case over roles
+    #   "customer" -> "/customer"
+    #   "admin" -> "/admin"
+    #   "merchant" -> "/merchant"
+    #   false -> "/"
+    # end
+    "/"
+  end
+
+  # defp has_role?(nil, _roles), do: false
+  # defp has_role?(user, roles) when is_list(roles), do: Enum.any?(roles, &has_role?(user, &1))
+  # defp has_role?(user, role) when is_atom(role), do: has_role?(user, Atom.to_string(role))
+  # defp has_role?(%{role: role}, role), do: role
+  # defp has_role?(_user, _role), do: false
+
+
 end

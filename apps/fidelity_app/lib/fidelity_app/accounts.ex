@@ -395,6 +395,14 @@ defmodule FidelityApp.Accounts do
     |> Repo.update()
   end
 
+  @spec set_role(t(), map()) :: {:ok, t()} | {:error, Ecto.Changeset.t()}
+  def set_role(user, attrs) do
+    user
+    |> User.changeset_role(attrs)
+    |> Repo.update()
+  end
+
+
   @doc """
   Subscribe to updates to the user list.
   """

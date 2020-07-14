@@ -22,11 +22,11 @@ defmodule FidelityAppWeb.Router do
   end
 
   pipeline :customer do
-    plug FidelityAppWeb.Plugs.EnsureRolePlug, :customer
+    plug FidelityAppWeb.Plugs.EnsureRolePlug, [:customer, :admin]
   end
 
   pipeline :merchant do
-    plug FidelityAppWeb.Plugs.EnsureRolePlug, :merchant
+    plug FidelityAppWeb.Plugs.EnsureRolePlug, [:merchant, :admin]
   end
 
 
@@ -91,14 +91,14 @@ defmodule FidelityAppWeb.Router do
 
 
   scope "/", FidelityAppWeb do
-    pipe_through [:browser, :require_authenticated_user, :customer, :admin]
+    pipe_through [:browser, :require_authenticated_user, :customer]
 
     live "/customer", CustomerLive
 
   end
 
   scope "/", FidelityAppWeb do
-    pipe_through [:browser, :require_authenticated_user, :merchant, :admin]
+    pipe_through [:browser, :require_authenticated_user, :merchant]
 
     live "/merchant", CustomerLive
 
@@ -108,8 +108,10 @@ defmodule FidelityAppWeb.Router do
   scope "/", FidelityAppWeb do
     pipe_through [:browser, :require_authenticated_user, :admin]
 
-    live "/admin", AdminuserLive
-    live "/admin/users", AdminuserLive
+    live "/admin", AdminLive
+    live "/admin/users", AdminuserLive.Index
+    live "/admin/users/:id", AdminuserLive.Show
+    live "/admin/users/:id/edit", AdminuserLive.Edit
   end
 
   scope "/", FidelityAppWeb do

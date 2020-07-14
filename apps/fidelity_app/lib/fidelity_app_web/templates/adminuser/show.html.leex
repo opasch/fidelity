@@ -1,0 +1,18 @@
+<h1>Show User</h1>
+
+<ul>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </li>
+
+  <li>
+    <strong>Role:</strong>
+    <%= @user.role %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.live_path(@socket, AdminuserLive.Edit, @user) %></span>
+<span><%= link "Back", to: Routes.live_path(@socket, AdminuserLive.Index) %></span>

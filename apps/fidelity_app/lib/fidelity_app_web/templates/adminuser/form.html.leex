@@ -1,0 +1,29 @@
+<h3>Change user role</h3>
+
+<%= f = form_for @changeset, "#", [phx_change: :validate_role, phx_submit: :save_role] %>
+
+    <%= label f, :role, for: "roleField" %>
+    <%= select f, :role, ["admin", "merchant", "customer"], id: "roleField" %>
+    <%= error_tag f, :role_id %>
+
+  <div>
+    <%= submit "Save", phx_disable_with: "Saving..." %>
+  </div>
+</form>
+
+<h3>Change user password</h3>
+
+<%= f = form_for @changeset, "#", [phx_change: :validate_password, phx_submit: :save_password] %>
+
+  <%= label f, :password, "New password" %>
+  <%= password_input f, :password, required: true %>
+  <%= error_tag f, :password %>
+
+  <%= label f, :password_confirmation, "Confirm new password" %>
+  <%= password_input f, :password_confirmation, required: true %>
+  <%= error_tag f, :password_confirmation %>
+
+  <div>
+    <%= submit "Change password", phx_disable_with: "Saving..." %>
+  </div>
+</form>
