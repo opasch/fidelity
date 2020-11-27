@@ -8,6 +8,15 @@ I want to explain how to use the Api Keys generated from Fidelize Dashboard. Tha
 - The Fidelize Dashboard
 - The Rules Engine
 
+## General usage
+Private methods must use POST and be set up as follows:
+
+HTTP header:
+```
+API-Key = API key
+API-Sign = A base64 encoded message signature using HMAC-SHA512 of (SHA256(nonce + POST data)) and base64 decoded of md5 hash of (public API key + secret API key)
+```
+
 ## Generate API Keys betwen Dashboard and Rules Engine
 The 1st connection we want to create is between the Dashboard and the Rules engine. Then, we'll use the same process to connect the shopping cart to the dashboard.
 
@@ -81,9 +90,9 @@ class APIKeys
   /**
    * This function checks the API Keys
    *
-   * @param array $request is the POST message
+   * @param array $_POST is the POST message
   */
-  public function check($request)
+  public function check()
   {
     if (!function_exists('getallheaders')) {
       function getallheaders() {
@@ -97,7 +106,6 @@ class APIKeys
       }
     }
 
-    $securityToken = null;
     $post = json_decode($_POST['data']);
     $headers = getallheaders();
 
