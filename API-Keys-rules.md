@@ -14,7 +14,7 @@ Private methods must use POST and be set up as follows:
 HTTP header:
 ```
 API-Key = API key
-API-Sign = A base64 encoded message signature using HMAC-SHA512 of (SHA256(nonce + POST data)) and base64 decoded of md5 hash of (public API key + secret API key)
+API-Sign = A base64 encoded message signature using HMAC-SHA512 of (SHA256(nonce + POST data)) and base64 decoded of secret API key
 ```
 
 ## Generate API Keys betwen Dashboard and Rules Engine
@@ -32,7 +32,7 @@ This is our only chance to copy the private key, as it will no longer be shown.
 #### Saving keys
 The Fidelize Dashboard software save the keys in this two fields
 - key_public: public key in clear text
-- key_private: md5(public-key + private-key)
+- key_private: encoded private-key
 
 __The RULES ENGINE must find a way to save the private key, perhaps encrypting it with its own system.__
 
@@ -65,11 +65,8 @@ $request['nonce'] = $nonce[1] . str_pad(substr($nonce[0], 2, 6), 6, '0');
 // build the POST data string
 $postdata = http_build_query($request, '', '&');
 
-// set the private key
-$X_PRIVATE_KEY = md5($publicKey . $privateKey);
-
 // set the sign to send in header in the web request to Backend
-$sign = base64_encode(hash_hmac('sha512', hash('sha256', $request['nonce'] . $postdata, true), base64_decode($X_PRIVATE_KEY), true));
+$sign = base64_encode(hash_hmac('sha512', hash('sha256', $request['nonce'] . $postdata, true), base64_decode($privatekey), true));
 ```
 
 With the generated __sign__ we can now send the POST message to the Fidelize backend of the dashboard. In the headers of message we must set these parameters:
@@ -94,58 +91,22 @@ class APIKeys
   */
   public function check()
   {
-    // Save the logs
-    $save = new Save;
-
-    if (!function_exists('getallheaders')) {
-      function getallheaders() {
-        $headers = [];
-        foreach ($_SERVER as $name => $value) {
-          if (substr($name, 0, 5) == 'HTTP_') {
-            $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-          }
-        }
-        return $headers;
-      }
-    }
 
     // Retrieve payload and headers
-    $post = $_POST;
     $headers = getallheaders();
 
-    // check if the message is outdated
-    $microtime = explode(' ', microtime());
-    $nonce = $microtime[1] . str_pad(substr($microtime[0], 2, 6), 6, '0');
-    if (($nonce/1000000 - $post['nonce']/1000000) > NONCE_STEP){
-      $save->WriteLog('dashboard','ipn','APIKeys','Data is outdated!');
-      die (json_encode(['success'=>false,'message'=>'Data is outdated!']));
+    // Now we re-generate the POST hash
+    $postdata = http_build_query($_POST, '', '&');
+
+    // Now do the sign
+    $sign = base64_encode(hash_hmac('sha512', hash('sha256', $nonce . $postdata, true), base64_decode($model->key_secret), true));
+
+    // compare the two signatures
+    if (strcmp($sign, $headers['API-Sign']) <> 0){
+      die (json_encode(['success'=>false,'message'=>'Api keys are invalid!']));
     }
 
-    foreach ($headers as $name => $value) {
-      if (strtoupper($name) == 'API-KEY'){
-        // Load the Api keys from table to check existence
-        $model = Api::model()->findByAttributes(['key_public'=>$value]);
-        if (null === $model){
-          $save->WriteLog('dashboard','ipn','APIKeys','Public key doesn\'t exist!');
-          die (json_encode(['success'=>false,'message'=>'Public key doesn\'t exist!']));
-        }
 
-        // Now we re-generate the POST hash
-        $postdata = http_build_query($post, '', '&');
-
-        // Now generate the sign
-        $sign = base64_encode(hash_hmac('sha512', hash('sha256', $post['nonce'] . $postdata, true), base64_decode($model->key_secret), true));
-
-        // check if the generate sign is equal to sign in the header
-        if (strcmp($sign, $headers['API-Sign']) !== 0){
-          $save->WriteLog('dashboard','ipn','APIKeys','Api keys are invalid!');
-          die (json_encode(['success'=>false,'message'=>'Api keys are invalid!']));
-        }
-
-        // Now we can return, the sign is right!
-        return $post;
-      }
-    }
   }
 }
 ```
